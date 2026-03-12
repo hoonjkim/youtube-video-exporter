@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Video Exporter</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f0f0f;
+      color: #f1f1f1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 560px;
+      padding: 24px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+    }
+
+    #lang-select {
+      background: #1a1a1a;
+      color: #ccc;
+      border: 1px solid #3f3f3f;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 13px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #aaa;
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid #3f3f3f;
+      border-radius: 8px;
+      background: #1a1a1a;
+      color: #f1f1f1;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus { border-color: #ff0000; }
+    input[type="text"]::placeholder { color: #666; }
+
+    button {
+      padding: 12px 24px;
+      background: #ff0000;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    button:hover { background: #cc0000; }
+    button:disabled { background: #555; cursor: not-allowed; }
+
+    .columns {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .columns label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #ccc;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .columns input[type="checkbox"] {
+      accent-color: #ff0000;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .examples {
+      color: #777;
+      font-size: 12px;
+      margin-bottom: 24px;
+      line-height: 1.8;
+    }
+
+    .examples code {
+      background: #222;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #aaa;
+    }
+
+    .status {
+      text-align: center;
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .status.loading { display: block; background: #1a1a2e; color: #7b8cff; }
+    .status.success { display: block; background: #1a2e1a; color: #7bff7b; }
+    .status.error { display: block; background: #2e1a1a; color: #ff7b7b; }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #7b8cff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #channel-panel {
+      display: none;
+      background: #1a1a1a;
+      border: 1px solid #3f3f3f;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .channel-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .channel-header img { width: 48px; height: 48px; border-radius: 50%; }
+    .channel-header .info h2 { font-size: 18px; font-weight: 600; }
+    .channel-header .info span { color: #aaa; font-size: 13px; }
+
+    .playlist-list { max-height: 240px; overflow-y: auto; margin-bottom: 16px; }
+
+    .playlist-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .playlist-item:hover { background: #262626; }
+
+    .playlist-item input[type="radio"] {
+      accent-color: #ff0000;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .playlist-item label { flex: 1; cursor: pointer; font-size: 14px; }
+    .playlist-item .count { color: #888; font-size: 12px; white-space: nowrap; }
+
+    .playlist-list::-webkit-scrollbar { width: 6px; }
+    .playlist-list::-webkit-scrollbar-track { background: transparent; }
+    .playlist-list::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
+    #search-results {
+      background: #1a1a1a;
+      border: 1px solid #3f3f3f;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .channel-result {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .channel-result:hover { background: #262626; }
+    .channel-result img { width: 40px; height: 40px; border-radius: 50%; }
+    .channel-result .ch-info { flex: 1; }
+    .channel-result .ch-info .ch-name { font-size: 14px; font-weight: 500; }
+    .channel-result .ch-info .ch-stats { font-size: 12px; color: #888; }
+
+    .img-fallback {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #333; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: #888; flex-shrink: 0;
+    }
+
+    .channel-header .img-fallback { width: 48px; height: 48px; font-size: 22px; }
+
+    #related-keywords {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .kw-chip {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #262626;
+      border: 1px solid #3f3f3f;
+      border-radius: 16px;
+      padding: 4px 10px;
+      font-size: 13px;
+      color: #ccc;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .kw-chip:hover { border-color: #ff0000; }
+    .kw-chip.active { background: #3a1a1a; border-color: #ff0000; color: #ff6666; }
+
+    .kw-chip input[type="checkbox"] {
+      accent-color: #ff0000;
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+
+    #matched-videos {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 10px;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+    }
+
+    .matched-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: #1f1f1f;
+      border-bottom: 1px solid #2a2a2a;
+      font-size: 12px;
+      color: #888;
+      position: sticky;
+      top: 0;
+    }
+
+    .matched-header a {
+      color: #7b8cff;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 12px;
+    }
+
+    .matched-header a:hover { text-decoration: underline; }
+
+    .matched-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-bottom: 1px solid #1a1a1a;
+      font-size: 13px;
+      transition: background 0.1s;
+    }
+
+    .matched-item:hover { background: #1f1f1f; }
+    .matched-item:last-child { border-bottom: none; }
+
+    .matched-item input[type="checkbox"] {
+      accent-color: #ff0000;
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .matched-item .v-title {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .matched-item .v-date {
+      color: #666;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    #matched-videos::-webkit-scrollbar { width: 6px; }
+    #matched-videos::-webkit-scrollbar-track { background: transparent; }
+    #matched-videos::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <select id="lang-select">
+        <option value="en">English</option>
+        <option value="ko">한국어</option>
+        <option value="ja">日本語</option>
+        <option value="zh">中文</option>
+        <option value="es">Español</option>
+      </select>
+    </div>
+
+    <h1>YouTube Video Exporter</h1>
+    <p class="subtitle" data-i18n="subtitle"></p>
+
+    <div class="search-box">
+      <input type="text" id="query" autocomplete="off" data-i18n-placeholder="placeholder" />
+      <button id="searchBtn" data-i18n="search"></button>
+    </div>
+
+    <div class="examples" data-i18n-html="examples"></div>
+
+    <div id="search-results" style="display:none">
+      <p style="color:#aaa; font-size:13px; margin-bottom:10px;" data-i18n="selectChannel"></p>
+      <div id="channel-list"></div>
+    </div>
+
+    <div id="channel-panel">
+      <div class="channel-header">
+        <img id="ch-thumb" src="" alt="" referrerpolicy="no-referrer" />
+        <div class="info">
+          <h2 id="ch-title"></h2>
+          <span id="ch-count"></span>
+        </div>
+      </div>
+
+      <div class="playlist-list" id="playlist-list"></div>
+
+      <div id="keyword-section" style="margin-bottom:16px;">
+        <div class="search-box" style="margin-bottom:8px;">
+          <input type="text" id="keyword-input" autocomplete="off" data-i18n-placeholder="keywordPlaceholder" />
+          <button id="keywordBtn" data-i18n="filter" style="padding:10px 16px; font-size:13px;"></button>
+          <button id="clearFilterBtn" style="padding:10px 16px; font-size:13px; background:#333; display:none;" data-i18n="clearFilter"></button>
+        </div>
+        <div id="related-keywords" style="display:none;"></div>
+        <div id="filter-status" style="color:#aaa; font-size:13px; margin-top:6px; display:none;"></div>
+        <div id="matched-videos" style="display:none;"></div>
+      </div>
+
+      <div class="columns">
+        <label><input type="checkbox" value="title" checked /> <span data-i18n="colTitle"></span></label>
+        <label><input type="checkbox" value="url" checked /> <span data-i18n="colUrl"></span></label>
+        <label><input type="checkbox" value="date" checked /> <span data-i18n="colDate"></span></label>
+        <label><input type="checkbox" value="transcript" /> <span data-i18n="colTranscript"></span></label>
+      </div>
+
+      <button id="downloadBtn" style="width:100%" data-i18n="download"></button>
+    </div>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <script>
+    const i18n = {
+      en: {
+        subtitle: "Download all video titles and links from any YouTuber as CSV",
+        placeholder: "Enter YouTuber name or channel URL",
+        search: "Search",
+        examples: 'Examples: <code>@channelhandle</code> <code>Channel Name</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "Select a channel:",
+        colTitle: "Title",
+        colUrl: "Link",
+        colDate: "Upload Date",
+        colTranscript: "Transcript",
+        download: "Download",
+        allVideos: "All Videos",
+        totalVideos: (n) => `${n} videos total`,
+        subscribers: (n) => `${n} subscribers`,
+        videos: (n) => `${n} videos`,
+        searching: "Searching for channels...",
+        loadingChannel: "Loading channel info...",
+        downloading: "Downloading video list...",
+        extractingTranscripts: "Extracting transcripts... (may take a few minutes)",
+        downloadComplete: (n) => `Download complete! ${n} videos`,
+        noResults: "No results found.",
+        enterQuery: "Please enter a YouTuber name or channel URL.",
+        selectColumn: "Please select at least one column.",
+        unknownError: "An unknown error occurred.",
+        keywordPlaceholder: "Filter by keyword (e.g. diabetes)",
+        filter: "Filter",
+        clearFilter: "Clear",
+        filterResult: (n, total) => `${n} of ${total} videos matched`,
+        relatedLabel: "Related:",
+        filteringVideos: "Filtering videos...",
+        selectAll: "Select All",
+        deselectAll: "Deselect All",
+        matchedCount: (n) => `${n} matched`,
+      },
+      ko: {
+        subtitle: "유튜버의 모든 영상 제목과 링크를 CSV로 다운로드",
+        placeholder: "유튜버 이름 또는 채널 주소 입력",
+        search: "검색",
+        examples: '입력 예시: <code>@channelhandle</code> <code>채널 이름</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "채널을 선택하세요:",
+        colTitle: "제목",
+        colUrl: "링크",
+        colDate: "업로드일",
+        colTranscript: "자막",
+        download: "다운로드",
+        allVideos: "전체 영상",
+        totalVideos: (n) => `총 ${n}개 영상`,
+        subscribers: (n) => `구독자 ${n}명`,
+        videos: (n) => `영상 ${n}개`,
+        searching: "채널을 검색하는 중...",
+        loadingChannel: "채널 정보를 가져오는 중...",
+        downloading: "영상 목록을 다운로드하는 중...",
+        extractingTranscripts: "자막을 추출하는 중... (영상 수에 따라 몇 분 걸릴 수 있습니다)",
+        downloadComplete: (n) => `총 ${n}개 영상 다운로드 완료!`,
+        noResults: "검색 결과가 없습니다.",
+        enterQuery: "유튜버 이름이나 채널 주소를 입력해주세요.",
+        selectColumn: "최소 하나의 칼럼을 선택해주세요.",
+        unknownError: "알 수 없는 오류가 발생했습니다.",
+        keywordPlaceholder: "키워드로 필터링 (예: 당뇨)",
+        filter: "필터",
+        clearFilter: "초기화",
+        filterResult: (n, total) => `전체 ${total}개 중 ${n}개 영상 일치`,
+        relatedLabel: "연관:",
+        filteringVideos: "영상을 필터링하는 중...",
+        selectAll: "전체 선택",
+        deselectAll: "전체 해제",
+        matchedCount: (n) => `${n}개 일치`,
+      },
+      ja: {
+        subtitle: "YouTuberの全動画タイトルとリンクをCSVでダウンロード",
+        placeholder: "YouTuber名またはチャンネルURLを入力",
+        search: "検索",
+        examples: '入力例: <code>@channelhandle</code> <code>チャンネル名</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "チャンネルを選択してください:",
+        colTitle: "タイトル",
+        colUrl: "リンク",
+        colDate: "公開日",
+        colTranscript: "字幕",
+        download: "ダウンロード",
+        allVideos: "全動画",
+        totalVideos: (n) => `全${n}本の動画`,
+        subscribers: (n) => `登録者 ${n}人`,
+        videos: (n) => `${n}本`,
+        searching: "チャンネルを検索中...",
+        loadingChannel: "チャンネル情報を取得中...",
+        downloading: "動画リストをダウンロード中...",
+        extractingTranscripts: "字幕を抽出中...(数分かかる場合があります)",
+        downloadComplete: (n) => `${n}本の動画をダウンロードしました！`,
+        noResults: "検索結果がありません。",
+        enterQuery: "YouTuber名またはチャンネルURLを入力してください。",
+        selectColumn: "少なくとも1つのカラムを選択してください。",
+        unknownError: "不明なエラーが発生しました。",
+        keywordPlaceholder: "キーワードでフィルター (例: ダイエット)",
+        filter: "フィルター",
+        clearFilter: "クリア",
+        filterResult: (n, total) => `全${total}本中 ${n}本が一致`,
+        relatedLabel: "関連:",
+        filteringVideos: "動画をフィルター中...",
+        selectAll: "全選択",
+        deselectAll: "全解除",
+        matchedCount: (n) => `${n}本一致`,
+      },
+      zh: {
+        subtitle: "将YouTuber的所有视频标题和链接下载为CSV",
+        placeholder: "输入YouTuber名称或频道URL",
+        search: "搜索",
+        examples: '示例: <code>@channelhandle</code> <code>频道名称</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "请选择频道:",
+        colTitle: "标题",
+        colUrl: "链接",
+        colDate: "上传日期",
+        colTranscript: "字幕",
+        download: "下载",
+        allVideos: "全部视频",
+        totalVideos: (n) => `共 ${n} 个视频`,
+        subscribers: (n) => `${n} 订阅者`,
+        videos: (n) => `${n} 个视频`,
+        searching: "正在搜索频道...",
+        loadingChannel: "正在获取频道信息...",
+        downloading: "正在下载视频列表...",
+        extractingTranscripts: "正在提取字幕...(可能需要几分钟)",
+        downloadComplete: (n) => `下载完成！共 ${n} 个视频`,
+        noResults: "没有找到结果。",
+        enterQuery: "请输入YouTuber名称或频道URL。",
+        selectColumn: "请至少选择一个列。",
+        unknownError: "发生未知错误。",
+        keywordPlaceholder: "按关键词筛选 (例: 糖尿病)",
+        filter: "筛选",
+        clearFilter: "清除",
+        filterResult: (n, total) => `共 ${total} 个中匹配 ${n} 个`,
+        relatedLabel: "相关:",
+        filteringVideos: "正在筛选视频...",
+        selectAll: "全选",
+        deselectAll: "取消全选",
+        matchedCount: (n) => `${n}个匹配`,
+      },
+      es: {
+        subtitle: "Descarga todos los títulos y enlaces de videos de cualquier YouTuber como CSV",
+        placeholder: "Ingresa nombre del YouTuber o URL del canal",
+        search: "Buscar",
+        examples: 'Ejemplos: <code>@channelhandle</code> <code>Nombre del canal</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "Selecciona un canal:",
+        colTitle: "Título",
+        colUrl: "Enlace",
+        colDate: "Fecha",
+        colTranscript: "Subtítulos",
+        download: "Descargar",
+        allVideos: "Todos los videos",
+        totalVideos: (n) => `${n} videos en total`,
+        subscribers: (n) => `${n} suscriptores`,
+        videos: (n) => `${n} videos`,
+        searching: "Buscando canales...",
+        loadingChannel: "Cargando información del canal...",
+        downloading: "Descargando lista de videos...",
+        extractingTranscripts: "Extrayendo subtítulos... (puede tardar unos minutos)",
+        downloadComplete: (n) => `¡Descarga completa! ${n} videos`,
+        noResults: "No se encontraron resultados.",
+        enterQuery: "Por favor ingresa un nombre de YouTuber o URL del canal.",
+        selectColumn: "Por favor selecciona al menos una columna.",
+        unknownError: "Ocurrió un error desconocido.",
+        keywordPlaceholder: "Filtrar por palabra clave (ej: diabetes)",
+        filter: "Filtrar",
+        clearFilter: "Limpiar",
+        filterResult: (n, total) => `${n} de ${total} videos coinciden`,
+        relatedLabel: "Relacionados:",
+        filteringVideos: "Filtrando videos...",
+        selectAll: "Seleccionar todo",
+        deselectAll: "Deseleccionar todo",
+        matchedCount: (n) => `${n} coincidencias`,
+      },
+    };
+
+    let lang = localStorage.getItem("yt-exporter-lang") || "en";
+    const t = (key, ...args) => {
+      const val = i18n[lang]?.[key] || i18n.en[key];
+      return typeof val === "function" ? val(...args) : val;
+    };
+
+    const langSelect = document.getElementById("lang-select");
+    langSelect.value = lang;
+    langSelect.addEventListener("change", () => {
+      lang = langSelect.value;
+      localStorage.setItem("yt-exporter-lang", lang);
+      applyI18n();
+      if (channelData) renderChannelPanel();
+    });
+
+    function applyI18n() {
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        el.textContent = t(el.dataset.i18n);
+      });
+      document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+        el.innerHTML = t(el.dataset.i18nHtml);
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+        el.placeholder = t(el.dataset.i18nPlaceholder);
+      });
+    }
+
+    applyI18n();
+
+    const input = document.getElementById("query");
+    const searchBtn = document.getElementById("searchBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const statusEl = document.getElementById("status");
+    const panel = document.getElementById("channel-panel");
+    const searchResults = document.getElementById("search-results");
+
+    let channelData = null;
+    let activeKeywords = [];
+
+    const keywordInput = document.getElementById("keyword-input");
+    const keywordBtn = document.getElementById("keywordBtn");
+    const clearFilterBtn = document.getElementById("clearFilterBtn");
+    const relatedEl = document.getElementById("related-keywords");
+    const filterStatusEl = document.getElementById("filter-status");
+
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") searchChannel(); });
+    searchBtn.addEventListener("click", searchChannel);
+    downloadBtn.addEventListener("click", downloadVideos);
+    keywordBtn.addEventListener("click", filterByKeyword);
+    keywordInput.addEventListener("keydown", (e) => { if (e.key === "Enter") filterByKeyword(); });
+    clearFilterBtn.addEventListener("click", clearFilter);
+
+    function formatCount(n) {
+      if (lang === "ko") {
+        if (n >= 10000) return (n / 10000).toFixed(1) + "만";
+        if (n >= 1000) return (n / 1000).toFixed(1) + "천";
+      } else if (lang === "ja") {
+        if (n >= 10000) return (n / 10000).toFixed(1) + "万";
+      } else if (lang === "zh") {
+        if (n >= 10000) return (n / 10000).toFixed(1) + "万";
+      }
+      if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
+      if (n >= 1000) return (n / 1000).toFixed(1) + "K";
+      return n.toString();
+    }
+
+    async function searchChannel() {
+      const query = input.value.trim();
+      if (!query) { showStatus("error", t("enterQuery")); return; }
+
+      searchBtn.disabled = true;
+      panel.style.display = "none";
+      searchResults.style.display = "none";
+      showStatus("loading", `<span class="spinner"></span>${t("searching")}`);
+
+      try {
+        const res = await fetch(`/api/search-channels?q=${encodeURIComponent(query)}`);
+        if (!res.ok) { const err = await res.json(); throw new Error(err.error || t("unknownError")); }
+        const channels = await res.json();
+        if (channels.length === 0) { showStatus("error", t("noResults")); return; }
+        if (channels.length === 1) { await selectChannel(channels[0].channelId); return; }
+        renderSearchResults(channels);
+        hideStatus();
+      } catch (err) {
+        showStatus("error", err.message);
+      } finally {
+        searchBtn.disabled = false;
+      }
+    }
+
+    function imgFallback(el, name) {
+      const div = document.createElement("div");
+      div.className = el.closest(".channel-header") ? "img-fallback channel-header" : "img-fallback";
+      div.textContent = (name || "?")[0];
+      el.replaceWith(div);
+    }
+
+    function renderSearchResults(channels) {
+      const list = document.getElementById("channel-list");
+      list.innerHTML = channels.map((ch) => `
+        <div class="channel-result" onclick="selectChannel('${ch.channelId}')">
+          <img src="${ch.thumbnail}" alt="" onerror="imgFallback(this, '${ch.title.replace(/'/g, "\\'")}')" referrerpolicy="no-referrer" />
+          <div class="ch-info">
+            <div class="ch-name">${ch.title}</div>
+            <div class="ch-stats">${t("subscribers", formatCount(ch.subscriberCount))} · ${t("videos", formatCount(ch.videoCount))}</div>
+          </div>
+        </div>
+      `).join("");
+      searchResults.style.display = "block";
+    }
+
+    async function selectChannel(channelId) {
+      searchResults.style.display = "none";
+      clearFilter();
+      showStatus("loading", `<span class="spinner"></span>${t("loadingChannel")}`);
+
+      try {
+        const res = await fetch(`/api/channel?id=${encodeURIComponent(channelId)}`);
+        if (!res.ok) { const err = await res.json(); throw new Error(err.error || t("unknownError")); }
+        channelData = await res.json();
+        renderChannelPanel();
+        hideStatus();
+      } catch (err) {
+        showStatus("error", err.message);
+      }
+    }
+
+    function renderChannelPanel() {
+      const thumb = document.getElementById("ch-thumb");
+      thumb.onerror = () => imgFallback(thumb, channelData.channelTitle);
+      thumb.src = channelData.thumbnail;
+      document.getElementById("ch-title").textContent = channelData.channelTitle;
+      document.getElementById("ch-count").textContent = t("totalVideos", channelData.videoCount);
+
+      const list = document.getElementById("playlist-list");
+      let html = `
+        <div class="playlist-item">
+          <input type="radio" name="playlist" id="pl-all" value="${channelData.uploadsPlaylistId}" checked />
+          <label for="pl-all">${t("allVideos")}</label>
+          <span class="count">${channelData.videoCount}</span>
+        </div>`;
+
+      channelData.playlists.forEach((pl, i) => {
+        html += `
+          <div class="playlist-item">
+            <input type="radio" name="playlist" id="pl-${i}" value="${pl.id}" />
+            <label for="pl-${i}">${pl.title}</label>
+            <span class="count">${pl.count}</span>
+          </div>`;
+      });
+
+      list.innerHTML = html;
+      panel.style.display = "block";
+    }
+
+    let matchedVideos = [];
+    const matchedEl = document.getElementById("matched-videos");
+
+    async function filterByKeyword() {
+      const kw = keywordInput.value.trim();
+      if (!kw || !channelData) return;
+
+      activeKeywords = [kw];
+      keywordBtn.disabled = true;
+      showStatus("loading", `<span class="spinner"></span>${t("filteringVideos")}`);
+
+      try {
+        const playlistId = document.querySelector('input[name="playlist"]:checked')?.value || channelData.uploadsPlaylistId;
+        const res = await fetch(`/api/filter-videos?playlistId=${encodeURIComponent(playlistId)}&keywords=${encodeURIComponent(kw)}`);
+        if (!res.ok) { const err = await res.json(); throw new Error(err.error || t("unknownError")); }
+        const data = await res.json();
+        matchedVideos = data.matched;
+
+        // Show related keywords
+        if (data.relatedKeywords.length > 0) {
+          relatedEl.innerHTML = `<span style="color:#888; font-size:12px;">${t("relatedLabel")}</span>` +
+            data.relatedKeywords.map((rk) => `
+              <label class="kw-chip" onclick="this.classList.toggle('active')">
+                <input type="checkbox" value="${rk}" onchange="updateFilter()" />${rk}
+              </label>
+            `).join("");
+          relatedEl.style.display = "flex";
+        } else {
+          relatedEl.style.display = "none";
+        }
+
+        renderMatchedVideos(data.matched);
+        filterStatusEl.textContent = t("filterResult", data.totalMatched, channelData.videoCount);
+        filterStatusEl.style.display = "block";
+        clearFilterBtn.style.display = "inline-block";
+        hideStatus();
+      } catch (err) {
+        showStatus("error", err.message);
+      } finally {
+        keywordBtn.disabled = false;
+      }
+    }
+
+    function renderMatchedVideos(videos) {
+      if (videos.length === 0) {
+        matchedEl.style.display = "none";
+        return;
+      }
+      matchedEl.innerHTML = `
+        <div class="matched-header">
+          <span>${t("matchedCount", videos.length)}</span>
+          <span>
+            <a onclick="toggleAllMatched(true)">${t("selectAll")}</a> / <a onclick="toggleAllMatched(false)">${t("deselectAll")}</a>
+          </span>
+        </div>` +
+        videos.map((v, i) => `
+          <div class="matched-item">
+            <input type="checkbox" checked id="mv-${i}" data-url="${v.url}" />
+            <span class="v-title" title="${v.title}">${v.title}</span>
+            <span class="v-date">${v.publishedAt.slice(0, 10)}</span>
+          </div>
+        `).join("");
+      matchedEl.style.display = "block";
+    }
+
+    function toggleAllMatched(checked) {
+      document.querySelectorAll('#matched-videos input[type="checkbox"]').forEach((cb) => { cb.checked = checked; });
+    }
+
+    function updateFilter() {
+      const baseKw = keywordInput.value.trim();
+      const extraKws = [...document.querySelectorAll('#related-keywords input:checked')].map((c) => c.value);
+      activeKeywords = [baseKw, ...extraKws].filter(Boolean);
+
+      const playlistId = document.querySelector('input[name="playlist"]:checked')?.value || channelData.uploadsPlaylistId;
+      fetch(`/api/filter-videos?playlistId=${encodeURIComponent(playlistId)}&keywords=${encodeURIComponent(activeKeywords.join(","))}`)
+        .then((r) => r.json())
+        .then((data) => {
+          matchedVideos = data.matched;
+          renderMatchedVideos(data.matched);
+          filterStatusEl.textContent = t("filterResult", data.totalMatched, channelData.videoCount);
+        });
+    }
+
+    function clearFilter() {
+      activeKeywords = [];
+      matchedVideos = [];
+      keywordInput.value = "";
+      relatedEl.style.display = "none";
+      relatedEl.innerHTML = "";
+      filterStatusEl.style.display = "none";
+      clearFilterBtn.style.display = "none";
+      matchedEl.style.display = "none";
+      matchedEl.innerHTML = "";
+    }
+
+    async function downloadVideos() {
+      const selected = document.querySelector('input[name="playlist"]:checked');
+      if (!selected) return;
+
+      const cols = [...document.querySelectorAll('.columns input:checked')].map(c => c.value);
+      if (cols.length === 0) { showStatus("error", t("selectColumn")); return; }
+
+      downloadBtn.disabled = true;
+      const hasTranscript = cols.includes("transcript");
+      showStatus("loading", `<span class="spinner"></span>${hasTranscript ? t("extractingTranscripts") : t("downloading")}`);
+
+      try {
+        const playlistId = selected.value;
+        const name = channelData.channelTitle;
+        const controller = new AbortController();
+        const timeout = hasTranscript ? 600000 : 60000;
+        const timer = setTimeout(() => controller.abort(), timeout);
+
+        // If filter is active, only download checked videos
+        const checkedUrls = matchedVideos.length > 0
+          ? [...document.querySelectorAll('#matched-videos input[type="checkbox"]:checked')].map((cb) => cb.dataset.url).filter(Boolean)
+          : null;
+
+        let res;
+        if (checkedUrls) {
+          res = await fetch(`/api/videos`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ playlistId, cols: cols.join(","), name, lang, videoUrls: checkedUrls }),
+            signal: controller.signal,
+          });
+        } else {
+          let videoUrl = `/api/videos?playlistId=${encodeURIComponent(playlistId)}&cols=${cols.join(",")}&name=${encodeURIComponent(name)}&lang=${lang}`;
+          if (activeKeywords.length > 0) {
+            videoUrl += `&keywords=${encodeURIComponent(activeKeywords.join(","))}`;
+          }
+          res = await fetch(videoUrl, { signal: controller.signal });
+        }
+        clearTimeout(timer);
+
+        if (!res.ok) { const err = await res.json(); throw new Error(err.error || t("unknownError")); }
+
+        const videoCount = res.headers.get("X-Video-Count") || "?";
+        const blob = await res.blob();
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${name.replace(/[^a-zA-Z0-9가-힣]/g, "_")}_videos.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showStatus("success", t("downloadComplete", videoCount));
+      } catch (err) {
+        showStatus("error", err.message);
+      } finally {
+        downloadBtn.disabled = false;
+      }
+    }
+
+    function showStatus(type, html) {
+      statusEl.className = "status " + type;
+      statusEl.innerHTML = html;
+    }
+
+    function hideStatus() {
+      statusEl.className = "status";
+      statusEl.innerHTML = "";
+    }
+  </script>
+</body>
+</html>
