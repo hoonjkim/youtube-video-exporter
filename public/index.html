@@ -171,6 +171,7 @@
     }
 
     .channel-header img { width: 48px; height: 48px; border-radius: 50%; }
+    .channel-header:hover { opacity: 0.8; }
     .channel-header .info h2 { font-size: 18px; font-weight: 600; }
     .channel-header .info span { color: #aaa; font-size: 13px; }
 
@@ -339,10 +340,25 @@
     <div class="top-bar">
       <select id="lang-select">
         <option value="en">English</option>
-        <option value="ko">한국어</option>
-        <option value="ja">日本語</option>
         <option value="zh">中文</option>
+        <option value="hi">हिन्दी</option>
         <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="ar">العربية</option>
+        <option value="bn">বাংলা</option>
+        <option value="pt">Português</option>
+        <option value="ru">Русский</option>
+        <option value="ja">日本語</option>
+        <option value="de">Deutsch</option>
+        <option value="ko">한국어</option>
+        <option value="tr">Türkçe</option>
+        <option value="vi">Tiếng Việt</option>
+        <option value="it">Italiano</option>
+        <option value="th">ไทย</option>
+        <option value="pl">Polski</option>
+        <option value="nl">Nederlands</option>
+        <option value="id">Bahasa Indonesia</option>
+        <option value="tl">Filipino</option>
       </select>
     </div>
 
@@ -362,13 +378,13 @@
     </div>
 
     <div id="channel-panel">
-      <div class="channel-header">
+      <a class="channel-header" id="ch-link" href="#" target="_blank" style="text-decoration:none; color:inherit;">
         <img id="ch-thumb" src="" alt="" referrerpolicy="no-referrer" />
         <div class="info">
           <h2 id="ch-title"></h2>
           <span id="ch-count"></span>
         </div>
-      </div>
+      </a>
 
       <div class="playlist-list" id="playlist-list"></div>
 
@@ -568,6 +584,321 @@
         deselectAll: "Deseleccionar todo",
         matchedCount: (n) => `${n} coincidencias`,
       },
+      hi: {
+        subtitle: "किसी भी YouTuber के सभी वीडियो शीर्षक और लिंक CSV के रूप में डाउनलोड करें",
+        placeholder: "YouTuber का नाम या चैनल URL दर्ज करें",
+        search: "खोजें",
+        examples: 'उदाहरण: <code>@channelhandle</code> <code>चैनल का नाम</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "चैनल चुनें:",
+        colTitle: "शीर्षक", colUrl: "लिंक", colDate: "अपलोड तिथि", colTranscript: "उपशीर्षक",
+        download: "डाउनलोड", allVideos: "सभी वीडियो",
+        totalVideos: (n) => `कुल ${n} वीडियो`,
+        subscribers: (n) => `${n} सब्सक्राइबर`, videos: (n) => `${n} वीडियो`,
+        searching: "चैनल खोज रहे हैं...", loadingChannel: "चैनल जानकारी लोड हो रही है...",
+        downloading: "वीडियो सूची डाउनलोड हो रही है...",
+        extractingTranscripts: "उपशीर्षक निकाले जा रहे हैं... (कुछ मिनट लग सकते हैं)",
+        downloadComplete: (n) => `डाउनलोड पूरा! ${n} वीडियो`,
+        noResults: "कोई परिणाम नहीं मिला।", enterQuery: "कृपया YouTuber का नाम या चैनल URL दर्ज करें।",
+        selectColumn: "कृपया कम से कम एक कॉलम चुनें।", unknownError: "एक अज्ञात त्रुटि हुई।",
+        keywordPlaceholder: "कीवर्ड से फ़िल्टर करें", filter: "फ़िल्टर", clearFilter: "साफ़",
+        filterResult: (n, total) => `${total} में से ${n} वीडियो मिले`,
+        relatedLabel: "संबंधित:", filteringVideos: "वीडियो फ़िल्टर हो रहे हैं...",
+        selectAll: "सभी चुनें", deselectAll: "सभी हटाएं", matchedCount: (n) => `${n} मिले`,
+      },
+      fr: {
+        subtitle: "Téléchargez tous les titres et liens vidéo d'un YouTuber en CSV",
+        placeholder: "Entrez le nom du YouTuber ou l'URL de la chaîne",
+        search: "Rechercher",
+        examples: 'Exemples: <code>@channelhandle</code> <code>Nom de chaîne</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "Sélectionnez une chaîne:",
+        colTitle: "Titre", colUrl: "Lien", colDate: "Date", colTranscript: "Sous-titres",
+        download: "Télécharger", allVideos: "Toutes les vidéos",
+        totalVideos: (n) => `${n} vidéos au total`,
+        subscribers: (n) => `${n} abonnés`, videos: (n) => `${n} vidéos`,
+        searching: "Recherche de chaînes...", loadingChannel: "Chargement des infos...",
+        downloading: "Téléchargement de la liste...",
+        extractingTranscripts: "Extraction des sous-titres... (peut prendre quelques minutes)",
+        downloadComplete: (n) => `Téléchargement terminé! ${n} vidéos`,
+        noResults: "Aucun résultat.", enterQuery: "Veuillez entrer un nom de YouTuber ou une URL.",
+        selectColumn: "Veuillez sélectionner au moins une colonne.", unknownError: "Une erreur inconnue s'est produite.",
+        keywordPlaceholder: "Filtrer par mot-clé", filter: "Filtrer", clearFilter: "Effacer",
+        filterResult: (n, total) => `${n} sur ${total} vidéos correspondent`,
+        relatedLabel: "Associés:", filteringVideos: "Filtrage des vidéos...",
+        selectAll: "Tout sélectionner", deselectAll: "Tout désélectionner", matchedCount: (n) => `${n} résultats`,
+      },
+      ar: {
+        subtitle: "تحميل جميع عناوين وروابط الفيديو من أي يوتيوبر كملف CSV",
+        placeholder: "أدخل اسم اليوتيوبر أو رابط القناة",
+        search: "بحث",
+        examples: 'أمثلة: <code>@channelhandle</code> <code>اسم القناة</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "اختر قناة:",
+        colTitle: "العنوان", colUrl: "الرابط", colDate: "التاريخ", colTranscript: "الترجمة",
+        download: "تحميل", allVideos: "جميع الفيديوهات",
+        totalVideos: (n) => `${n} فيديو إجمالاً`,
+        subscribers: (n) => `${n} مشترك`, videos: (n) => `${n} فيديو`,
+        searching: "جاري البحث...", loadingChannel: "جاري تحميل معلومات القناة...",
+        downloading: "جاري تحميل القائمة...",
+        extractingTranscripts: "جاري استخراج الترجمة... (قد يستغرق بضع دقائق)",
+        downloadComplete: (n) => `تم التحميل! ${n} فيديو`,
+        noResults: "لا توجد نتائج.", enterQuery: "يرجى إدخال اسم اليوتيوبر أو رابط القناة.",
+        selectColumn: "يرجى تحديد عمود واحد على الأقل.", unknownError: "حدث خطأ غير معروف.",
+        keywordPlaceholder: "تصفية بالكلمة المفتاحية", filter: "تصفية", clearFilter: "مسح",
+        filterResult: (n, total) => `${n} من ${total} فيديو متطابق`,
+        relatedLabel: "ذات صلة:", filteringVideos: "جاري التصفية...",
+        selectAll: "تحديد الكل", deselectAll: "إلغاء الكل", matchedCount: (n) => `${n} متطابق`,
+      },
+      bn: {
+        subtitle: "যেকোনো YouTuber-এর সব ভিডিও শিরোনাম ও লিংক CSV হিসেবে ডাউনলোড করুন",
+        placeholder: "YouTuber-এর নাম বা চ্যানেল URL লিখুন",
+        search: "খুঁজুন",
+        examples: 'উদাহরণ: <code>@channelhandle</code> <code>চ্যানেলের নাম</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "একটি চ্যানেল নির্বাচন করুন:",
+        colTitle: "শিরোনাম", colUrl: "লিংক", colDate: "তারিখ", colTranscript: "সাবটাইটেল",
+        download: "ডাউনলোড", allVideos: "সব ভিডিও",
+        totalVideos: (n) => `মোট ${n}টি ভিডিও`,
+        subscribers: (n) => `${n} সাবস্ক্রাইবার`, videos: (n) => `${n}টি ভিডিও`,
+        searching: "চ্যানেল খোঁজা হচ্ছে...", loadingChannel: "চ্যানেলের তথ্য লোড হচ্ছে...",
+        downloading: "ভিডিও তালিকা ডাউনলোড হচ্ছে...",
+        extractingTranscripts: "সাবটাইটেল বের করা হচ্ছে... (কয়েক মিনিট লাগতে পারে)",
+        downloadComplete: (n) => `ডাউনলোড সম্পন্ন! ${n}টি ভিডিও`,
+        noResults: "কোনো ফলাফল পাওয়া যায়নি।", enterQuery: "অনুগ্রহ করে YouTuber-এর নাম বা URL লিখুন।",
+        selectColumn: "অন্তত একটি কলাম নির্বাচন করুন।", unknownError: "একটি অজানা ত্রুটি ঘটেছে।",
+        keywordPlaceholder: "কীওয়ার্ড দিয়ে ফিল্টার", filter: "ফিল্টার", clearFilter: "মুছুন",
+        filterResult: (n, total) => `${total}টির মধ্যে ${n}টি মিলেছে`,
+        relatedLabel: "সম্পর্কিত:", filteringVideos: "ভিডিও ফিল্টার হচ্ছে...",
+        selectAll: "সব নির্বাচন", deselectAll: "সব বাতিল", matchedCount: (n) => `${n}টি মিলেছে`,
+      },
+      pt: {
+        subtitle: "Baixe todos os títulos e links de vídeos de qualquer YouTuber como CSV",
+        placeholder: "Digite o nome do YouTuber ou URL do canal",
+        search: "Buscar",
+        examples: 'Exemplos: <code>@channelhandle</code> <code>Nome do canal</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "Selecione um canal:",
+        colTitle: "Título", colUrl: "Link", colDate: "Data", colTranscript: "Legendas",
+        download: "Baixar", allVideos: "Todos os vídeos",
+        totalVideos: (n) => `${n} vídeos no total`,
+        subscribers: (n) => `${n} inscritos`, videos: (n) => `${n} vídeos`,
+        searching: "Buscando canais...", loadingChannel: "Carregando informações...",
+        downloading: "Baixando lista de vídeos...",
+        extractingTranscripts: "Extraindo legendas... (pode levar alguns minutos)",
+        downloadComplete: (n) => `Download completo! ${n} vídeos`,
+        noResults: "Nenhum resultado encontrado.", enterQuery: "Por favor, digite um nome de YouTuber ou URL.",
+        selectColumn: "Selecione pelo menos uma coluna.", unknownError: "Ocorreu um erro desconhecido.",
+        keywordPlaceholder: "Filtrar por palavra-chave", filter: "Filtrar", clearFilter: "Limpar",
+        filterResult: (n, total) => `${n} de ${total} vídeos correspondem`,
+        relatedLabel: "Relacionados:", filteringVideos: "Filtrando vídeos...",
+        selectAll: "Selecionar tudo", deselectAll: "Desmarcar tudo", matchedCount: (n) => `${n} resultados`,
+      },
+      ru: {
+        subtitle: "Скачайте все названия и ссылки на видео любого YouTuber в CSV",
+        placeholder: "Введите имя YouTuber или URL канала",
+        search: "Поиск",
+        examples: 'Примеры: <code>@channelhandle</code> <code>Название канала</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "Выберите канал:",
+        colTitle: "Название", colUrl: "Ссылка", colDate: "Дата", colTranscript: "Субтитры",
+        download: "Скачать", allVideos: "Все видео",
+        totalVideos: (n) => `Всего ${n} видео`,
+        subscribers: (n) => `${n} подписчиков`, videos: (n) => `${n} видео`,
+        searching: "Поиск каналов...", loadingChannel: "Загрузка информации...",
+        downloading: "Скачивание списка видео...",
+        extractingTranscripts: "Извлечение субтитров... (может занять несколько минут)",
+        downloadComplete: (n) => `Загрузка завершена! ${n} видео`,
+        noResults: "Ничего не найдено.", enterQuery: "Введите имя YouTuber или URL канала.",
+        selectColumn: "Выберите хотя бы один столбец.", unknownError: "Произошла неизвестная ошибка.",
+        keywordPlaceholder: "Фильтр по ключевому слову", filter: "Фильтр", clearFilter: "Очистить",
+        filterResult: (n, total) => `${n} из ${total} видео совпадают`,
+        relatedLabel: "Связанные:", filteringVideos: "Фильтрация видео...",
+        selectAll: "Выбрать все", deselectAll: "Снять все", matchedCount: (n) => `${n} совпадений`,
+      },
+      de: {
+        subtitle: "Alle Videotitel und Links eines YouTubers als CSV herunterladen",
+        placeholder: "YouTuber-Name oder Kanal-URL eingeben",
+        search: "Suchen",
+        examples: 'Beispiele: <code>@channelhandle</code> <code>Kanalname</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "Kanal auswählen:",
+        colTitle: "Titel", colUrl: "Link", colDate: "Datum", colTranscript: "Untertitel",
+        download: "Herunterladen", allVideos: "Alle Videos",
+        totalVideos: (n) => `${n} Videos insgesamt`,
+        subscribers: (n) => `${n} Abonnenten`, videos: (n) => `${n} Videos`,
+        searching: "Kanäle werden gesucht...", loadingChannel: "Kanalinformationen werden geladen...",
+        downloading: "Videoliste wird heruntergeladen...",
+        extractingTranscripts: "Untertitel werden extrahiert... (kann einige Minuten dauern)",
+        downloadComplete: (n) => `Download abgeschlossen! ${n} Videos`,
+        noResults: "Keine Ergebnisse gefunden.", enterQuery: "Bitte YouTuber-Name oder URL eingeben.",
+        selectColumn: "Bitte mindestens eine Spalte auswählen.", unknownError: "Ein unbekannter Fehler ist aufgetreten.",
+        keywordPlaceholder: "Nach Stichwort filtern", filter: "Filtern", clearFilter: "Löschen",
+        filterResult: (n, total) => `${n} von ${total} Videos stimmen überein`,
+        relatedLabel: "Verwandt:", filteringVideos: "Videos werden gefiltert...",
+        selectAll: "Alle auswählen", deselectAll: "Alle abwählen", matchedCount: (n) => `${n} Treffer`,
+      },
+      tr: {
+        subtitle: "Herhangi bir YouTuber'ın tüm video başlıklarını ve bağlantılarını CSV olarak indirin",
+        placeholder: "YouTuber adı veya kanal URL'si girin",
+        search: "Ara",
+        examples: 'Örnekler: <code>@channelhandle</code> <code>Kanal Adı</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "Bir kanal seçin:",
+        colTitle: "Başlık", colUrl: "Bağlantı", colDate: "Tarih", colTranscript: "Altyazı",
+        download: "İndir", allVideos: "Tüm Videolar",
+        totalVideos: (n) => `Toplam ${n} video`,
+        subscribers: (n) => `${n} abone`, videos: (n) => `${n} video`,
+        searching: "Kanallar aranıyor...", loadingChannel: "Kanal bilgileri yükleniyor...",
+        downloading: "Video listesi indiriliyor...",
+        extractingTranscripts: "Altyazılar çıkarılıyor... (birkaç dakika sürebilir)",
+        downloadComplete: (n) => `İndirme tamamlandı! ${n} video`,
+        noResults: "Sonuç bulunamadı.", enterQuery: "Lütfen YouTuber adı veya kanal URL'si girin.",
+        selectColumn: "Lütfen en az bir sütun seçin.", unknownError: "Bilinmeyen bir hata oluştu.",
+        keywordPlaceholder: "Anahtar kelimeye göre filtrele", filter: "Filtrele", clearFilter: "Temizle",
+        filterResult: (n, total) => `${total} videodan ${n} tanesi eşleşti`,
+        relatedLabel: "İlgili:", filteringVideos: "Videolar filtreleniyor...",
+        selectAll: "Tümünü seç", deselectAll: "Tümünü kaldır", matchedCount: (n) => `${n} eşleşme`,
+      },
+      vi: {
+        subtitle: "Tải xuống tất cả tiêu đề và liên kết video của bất kỳ YouTuber nào dưới dạng CSV",
+        placeholder: "Nhập tên YouTuber hoặc URL kênh",
+        search: "Tìm kiếm",
+        examples: 'Ví dụ: <code>@channelhandle</code> <code>Tên kênh</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "Chọn kênh:",
+        colTitle: "Tiêu đề", colUrl: "Liên kết", colDate: "Ngày", colTranscript: "Phụ đề",
+        download: "Tải xuống", allVideos: "Tất cả video",
+        totalVideos: (n) => `Tổng ${n} video`,
+        subscribers: (n) => `${n} người đăng ký`, videos: (n) => `${n} video`,
+        searching: "Đang tìm kênh...", loadingChannel: "Đang tải thông tin kênh...",
+        downloading: "Đang tải danh sách video...",
+        extractingTranscripts: "Đang trích xuất phụ đề... (có thể mất vài phút)",
+        downloadComplete: (n) => `Tải xong! ${n} video`,
+        noResults: "Không tìm thấy kết quả.", enterQuery: "Vui lòng nhập tên YouTuber hoặc URL kênh.",
+        selectColumn: "Vui lòng chọn ít nhất một cột.", unknownError: "Đã xảy ra lỗi không xác định.",
+        keywordPlaceholder: "Lọc theo từ khóa", filter: "Lọc", clearFilter: "Xóa",
+        filterResult: (n, total) => `${n} trong ${total} video khớp`,
+        relatedLabel: "Liên quan:", filteringVideos: "Đang lọc video...",
+        selectAll: "Chọn tất cả", deselectAll: "Bỏ chọn tất cả", matchedCount: (n) => `${n} kết quả`,
+      },
+      it: {
+        subtitle: "Scarica tutti i titoli e i link dei video di qualsiasi YouTuber come CSV",
+        placeholder: "Inserisci il nome dello YouTuber o l'URL del canale",
+        search: "Cerca",
+        examples: 'Esempi: <code>@channelhandle</code> <code>Nome canale</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "Seleziona un canale:",
+        colTitle: "Titolo", colUrl: "Link", colDate: "Data", colTranscript: "Sottotitoli",
+        download: "Scarica", allVideos: "Tutti i video",
+        totalVideos: (n) => `${n} video in totale`,
+        subscribers: (n) => `${n} iscritti`, videos: (n) => `${n} video`,
+        searching: "Ricerca canali...", loadingChannel: "Caricamento informazioni...",
+        downloading: "Download della lista video...",
+        extractingTranscripts: "Estrazione sottotitoli... (potrebbe richiedere alcuni minuti)",
+        downloadComplete: (n) => `Download completato! ${n} video`,
+        noResults: "Nessun risultato trovato.", enterQuery: "Inserisci un nome YouTuber o URL del canale.",
+        selectColumn: "Seleziona almeno una colonna.", unknownError: "Si è verificato un errore sconosciuto.",
+        keywordPlaceholder: "Filtra per parola chiave", filter: "Filtra", clearFilter: "Cancella",
+        filterResult: (n, total) => `${n} di ${total} video corrispondono`,
+        relatedLabel: "Correlati:", filteringVideos: "Filtraggio video...",
+        selectAll: "Seleziona tutto", deselectAll: "Deseleziona tutto", matchedCount: (n) => `${n} risultati`,
+      },
+      th: {
+        subtitle: "ดาวน์โหลดชื่อและลิงก์วิดีโอทั้งหมดของ YouTuber เป็น CSV",
+        placeholder: "ป้อนชื่อ YouTuber หรือ URL ช่อง",
+        search: "ค้นหา",
+        examples: 'ตัวอย่าง: <code>@channelhandle</code> <code>ชื่อช่อง</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "เลือกช่อง:",
+        colTitle: "ชื่อ", colUrl: "ลิงก์", colDate: "วันที่", colTranscript: "คำบรรยาย",
+        download: "ดาวน์โหลด", allVideos: "วิดีโอทั้งหมด",
+        totalVideos: (n) => `ทั้งหมด ${n} วิดีโอ`,
+        subscribers: (n) => `ผู้ติดตาม ${n}`, videos: (n) => `${n} วิดีโอ`,
+        searching: "กำลังค้นหาช่อง...", loadingChannel: "กำลังโหลดข้อมูลช่อง...",
+        downloading: "กำลังดาวน์โหลดรายการวิดีโอ...",
+        extractingTranscripts: "กำลังดึงคำบรรยาย... (อาจใช้เวลาสักครู่)",
+        downloadComplete: (n) => `ดาวน์โหลดเสร็จ! ${n} วิดีโอ`,
+        noResults: "ไม่พบผลลัพธ์", enterQuery: "กรุณาป้อนชื่อ YouTuber หรือ URL",
+        selectColumn: "กรุณาเลือกอย่างน้อยหนึ่งคอลัมน์", unknownError: "เกิดข้อผิดพลาด",
+        keywordPlaceholder: "กรองตามคำสำคัญ", filter: "กรอง", clearFilter: "ล้าง",
+        filterResult: (n, total) => `${n} จาก ${total} วิดีโอตรงกัน`,
+        relatedLabel: "ที่เกี่ยวข้อง:", filteringVideos: "กำลังกรองวิดีโอ...",
+        selectAll: "เลือกทั้งหมด", deselectAll: "ยกเลิกทั้งหมด", matchedCount: (n) => `${n} ตรงกัน`,
+      },
+      pl: {
+        subtitle: "Pobierz wszystkie tytuły i linki wideo dowolnego YouTubera jako CSV",
+        placeholder: "Wpisz nazwę YouTubera lub URL kanału",
+        search: "Szukaj",
+        examples: 'Przykłady: <code>@channelhandle</code> <code>Nazwa kanału</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "Wybierz kanał:",
+        colTitle: "Tytuł", colUrl: "Link", colDate: "Data", colTranscript: "Napisy",
+        download: "Pobierz", allVideos: "Wszystkie filmy",
+        totalVideos: (n) => `Łącznie ${n} filmów`,
+        subscribers: (n) => `${n} subskrybentów`, videos: (n) => `${n} filmów`,
+        searching: "Szukanie kanałów...", loadingChannel: "Ładowanie informacji...",
+        downloading: "Pobieranie listy filmów...",
+        extractingTranscripts: "Wyodrębnianie napisów... (może potrwać kilka minut)",
+        downloadComplete: (n) => `Pobieranie zakończone! ${n} filmów`,
+        noResults: "Brak wyników.", enterQuery: "Wpisz nazwę YouTubera lub URL kanału.",
+        selectColumn: "Wybierz co najmniej jedną kolumnę.", unknownError: "Wystąpił nieznany błąd.",
+        keywordPlaceholder: "Filtruj według słowa kluczowego", filter: "Filtruj", clearFilter: "Wyczyść",
+        filterResult: (n, total) => `${n} z ${total} filmów pasuje`,
+        relatedLabel: "Powiązane:", filteringVideos: "Filtrowanie filmów...",
+        selectAll: "Zaznacz wszystko", deselectAll: "Odznacz wszystko", matchedCount: (n) => `${n} pasujących`,
+      },
+      nl: {
+        subtitle: "Download alle videotitels en links van elke YouTuber als CSV",
+        placeholder: "Voer YouTuber-naam of kanaal-URL in",
+        search: "Zoeken",
+        examples: 'Voorbeelden: <code>@channelhandle</code> <code>Kanaalnaam</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "Selecteer een kanaal:",
+        colTitle: "Titel", colUrl: "Link", colDate: "Datum", colTranscript: "Ondertitels",
+        download: "Downloaden", allVideos: "Alle video's",
+        totalVideos: (n) => `${n} video's totaal`,
+        subscribers: (n) => `${n} abonnees`, videos: (n) => `${n} video's`,
+        searching: "Kanalen zoeken...", loadingChannel: "Kanaalinfo laden...",
+        downloading: "Videolijst downloaden...",
+        extractingTranscripts: "Ondertitels extraheren... (kan enkele minuten duren)",
+        downloadComplete: (n) => `Download voltooid! ${n} video's`,
+        noResults: "Geen resultaten gevonden.", enterQuery: "Voer een YouTuber-naam of URL in.",
+        selectColumn: "Selecteer ten minste één kolom.", unknownError: "Er is een onbekende fout opgetreden.",
+        keywordPlaceholder: "Filteren op trefwoord", filter: "Filteren", clearFilter: "Wissen",
+        filterResult: (n, total) => `${n} van ${total} video's komen overeen`,
+        relatedLabel: "Gerelateerd:", filteringVideos: "Video's filteren...",
+        selectAll: "Alles selecteren", deselectAll: "Alles deselecteren", matchedCount: (n) => `${n} resultaten`,
+      },
+      id: {
+        subtitle: "Unduh semua judul dan tautan video dari YouTuber mana pun sebagai CSV",
+        placeholder: "Masukkan nama YouTuber atau URL channel",
+        search: "Cari",
+        examples: 'Contoh: <code>@channelhandle</code> <code>Nama Channel</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "Pilih channel:",
+        colTitle: "Judul", colUrl: "Tautan", colDate: "Tanggal", colTranscript: "Subtitle",
+        download: "Unduh", allVideos: "Semua Video",
+        totalVideos: (n) => `Total ${n} video`,
+        subscribers: (n) => `${n} subscriber`, videos: (n) => `${n} video`,
+        searching: "Mencari channel...", loadingChannel: "Memuat info channel...",
+        downloading: "Mengunduh daftar video...",
+        extractingTranscripts: "Mengekstrak subtitle... (mungkin butuh beberapa menit)",
+        downloadComplete: (n) => `Unduhan selesai! ${n} video`,
+        noResults: "Tidak ada hasil.", enterQuery: "Silakan masukkan nama YouTuber atau URL channel.",
+        selectColumn: "Pilih setidaknya satu kolom.", unknownError: "Terjadi kesalahan tidak diketahui.",
+        keywordPlaceholder: "Filter berdasarkan kata kunci", filter: "Filter", clearFilter: "Hapus",
+        filterResult: (n, total) => `${n} dari ${total} video cocok`,
+        relatedLabel: "Terkait:", filteringVideos: "Memfilter video...",
+        selectAll: "Pilih semua", deselectAll: "Hapus semua", matchedCount: (n) => `${n} cocok`,
+      },
+      tl: {
+        subtitle: "I-download ang lahat ng video title at link mula sa kahit anong YouTuber bilang CSV",
+        placeholder: "Ilagay ang pangalan ng YouTuber o channel URL",
+        search: "Hanapin",
+        examples: 'Halimbawa: <code>@channelhandle</code> <code>Pangalan ng Channel</code> <code>https://www.youtube.com/@handle</code> <code>https://www.youtube.com/channel/UC...</code>',
+        selectChannel: "Pumili ng channel:",
+        colTitle: "Pamagat", colUrl: "Link", colDate: "Petsa", colTranscript: "Subtitle",
+        download: "I-download", allVideos: "Lahat ng Video",
+        totalVideos: (n) => `Kabuuang ${n} video`,
+        subscribers: (n) => `${n} subscriber`, videos: (n) => `${n} video`,
+        searching: "Naghahanap ng channel...", loadingChannel: "Nilo-load ang impormasyon...",
+        downloading: "Dina-download ang listahan ng video...",
+        extractingTranscripts: "Kinukuha ang subtitle... (maaaring tumagal ng ilang minuto)",
+        downloadComplete: (n) => `Download tapos na! ${n} video`,
+        noResults: "Walang resulta.", enterQuery: "Pakilagay ang pangalan ng YouTuber o URL.",
+        selectColumn: "Pumili ng kahit isang column.", unknownError: "May naganap na hindi kilalang error.",
+        keywordPlaceholder: "I-filter ayon sa keyword", filter: "Filter", clearFilter: "Burahin",
+        filterResult: (n, total) => `${n} sa ${total} video ang tumugma`,
+        relatedLabel: "Kaugnay:", filteringVideos: "Fini-filter ang mga video...",
+        selectAll: "Piliin lahat", deselectAll: "Alisin lahat", matchedCount: (n) => `${n} tumugma`,
+      },
     };
 
     let lang = localStorage.getItem("yt-exporter-lang") || "en";
@@ -698,6 +1029,7 @@
     }
 
     function renderChannelPanel() {
+      document.getElementById("ch-link").href = `https://www.youtube.com/channel/${channelData.channelId}`;
       const thumb = document.getElementById("ch-thumb");
       thumb.onerror = () => imgFallback(thumb, channelData.channelTitle);
       thumb.src = channelData.thumbnail;
