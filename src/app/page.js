@@ -277,7 +277,9 @@ export default function Home() {
         </select>
       </div>
 
-      <h1 style={{ cursor: "pointer" }} onClick={resetToHome}>YouTube Video Exporter</h1>
+      <h1 className="logo" onClick={resetToHome}>
+        <span className="logo-icon">▶</span> YouTube Video Exporter
+      </h1>
       <p className="subtitle">{t("subtitle")}</p>
 
       <div className="search-box">
