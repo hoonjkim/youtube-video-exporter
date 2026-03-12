@@ -8,7 +8,7 @@ if (!globalForCache.videoCache) {
   globalForCache.videoCache = new Map();
 }
 const videoCache = globalForCache.videoCache;
-const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 export async function ytFetch(endpoint, params) {
   const qs = new URLSearchParams({ ...params, key: API_KEY }).toString();
@@ -79,4 +79,19 @@ export async function fetchTranscript(videoId) {
   } catch {
     return "";
   }
+}
+
+// Fetch transcripts in parallel batches of `concurrency`
+export async function fetchTranscriptsBatch(videos, concurrency = 5) {
+  const results = [...videos];
+  for (let i = 0; i < results.length; i += concurrency) {
+    const batch = results.slice(i, i + concurrency);
+    const transcripts = await Promise.all(
+      batch.map((v) => fetchTranscript(v.url.split("v=")[1]))
+    );
+    for (let j = 0; j < batch.length; j++) {
+      results[i + j] = { ...results[i + j], transcript: transcripts[j] };
+    }
+  }
+  return results;
 }

@@ -43,10 +43,17 @@ h1.logo {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: opacity 0.2s;
+  transition: all 0.2s;
+  background: #1a1a1a;
+  border: 1px solid #3f3f3f;
+  border-radius: 12px;
+  padding: 10px 20px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-h1.logo:hover { opacity: 0.8; }
+h1.logo:hover { background: #222; border-color: #ff0000; }
 
 .logo-icon {
   background: #ff0000;

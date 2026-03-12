@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAllVideos, fetchTranscript } from "@/lib/youtube";
+import { getAllVideos, fetchTranscriptsBatch } from "@/lib/youtube";
 import { toCsv } from "@/lib/csv";
 
 async function processVideos(playlistId, cols, keywords, csvLang, name, videoUrls) {
@@ -17,10 +17,7 @@ async function processVideos(playlistId, cols, keywords, csvLang, name, videoUrl
   }
 
   if (cols.includes("transcript")) {
-    for (let i = 0; i < videos.length; i++) {
-      const videoId = videos[i].url.split("v=")[1];
-      videos[i] = { ...videos[i], transcript: await fetchTranscript(videoId) };
-    }
+    videos = await fetchTranscriptsBatch(videos);
   }
 
   const csv = toCsv(videos, cols, csvLang);
