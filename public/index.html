@@ -189,7 +189,7 @@
 
     .playlist-item:hover { background: #262626; }
 
-    .playlist-item input[type="radio"] {
+    .playlist-item input[type="checkbox"] {
       accent-color: #ff0000;
       width: 16px;
       height: 16px;
@@ -1039,7 +1039,7 @@
       const list = document.getElementById("playlist-list");
       let html = `
         <div class="playlist-item">
-          <input type="radio" name="playlist" id="pl-all" value="${channelData.uploadsPlaylistId}" checked />
+          <input type="checkbox" class="playlist-cb" id="pl-all" value="${channelData.uploadsPlaylistId}" data-title="${t("allVideos")}" checked />
           <label for="pl-all">${t("allVideos")}</label>
           <span class="count">${channelData.videoCount}</span>
         </div>`;
@@ -1047,7 +1047,7 @@
       channelData.playlists.forEach((pl, i) => {
         html += `
           <div class="playlist-item">
-            <input type="radio" name="playlist" id="pl-${i}" value="${pl.id}" />
+            <input type="checkbox" class="playlist-cb" id="pl-${i}" value="${pl.id}" data-title="${pl.title.replace(/"/g, '&quot;')}" />
             <label for="pl-${i}">${pl.title}</label>
             <span class="count">${pl.count}</span>
           </div>`;
@@ -1069,7 +1069,7 @@
       showStatus("loading", `<span class="spinner"></span>${t("filteringVideos")}`);
 
       try {
-        const playlistId = document.querySelector('input[name="playlist"]:checked')?.value || channelData.uploadsPlaylistId;
+        const playlistId = document.querySelector('.playlist-cb:checked')?.value || channelData.uploadsPlaylistId;
         const res = await fetch(`/api/filter-videos?playlistId=${encodeURIComponent(playlistId)}&keywords=${encodeURIComponent(kw)}`);
         if (!res.ok) { const err = await res.json(); throw new Error(err.error || t("unknownError")); }
         const data = await res.json();
@@ -1154,8 +1154,8 @@
     }
 
     async function downloadVideos() {
-      const selected = document.querySelector('input[name="playlist"]:checked');
-      if (!selected) return;
+      const selectedPlaylists = [...document.querySelectorAll('.playlist-cb:checked')];
+      if (selectedPlaylists.length === 0) { showStatus("error", t("selectColumn")); return; }
 
       const cols = [...document.querySelectorAll('.columns input:checked')].map(c => c.value);
       if (cols.length === 0) { showStatus("error", t("selectColumn")); return; }
@@ -1165,49 +1165,57 @@
       showStatus("loading", `<span class="spinner"></span>${hasTranscript ? t("extractingTranscripts") : t("downloading")}`);
 
       try {
-        const playlistId = selected.value;
-        const name = channelData.channelTitle;
-        const controller = new AbortController();
-        const timeout = hasTranscript ? 600000 : 60000;
-        const timer = setTimeout(() => controller.abort(), timeout);
+        let totalVideoCount = 0;
 
-        // If filter is active, only download checked videos
-        const checkedUrls = matchedVideos.length > 0
-          ? [...document.querySelectorAll('#matched-videos input[type="checkbox"]:checked')].map((cb) => cb.dataset.url).filter(Boolean)
-          : null;
+        for (const pl of selectedPlaylists) {
+          const playlistId = pl.value;
+          const playlistTitle = pl.dataset.title;
+          const isAllVideos = pl.id === "pl-all";
+          const name = isAllVideos ? channelData.channelTitle : `${channelData.channelTitle}_${playlistTitle}`;
 
-        let res;
-        if (checkedUrls) {
-          res = await fetch(`/api/videos`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ playlistId, cols: cols.join(","), name, lang, videoUrls: checkedUrls }),
-            signal: controller.signal,
-          });
-        } else {
-          let videoUrl = `/api/videos?playlistId=${encodeURIComponent(playlistId)}&cols=${cols.join(",")}&name=${encodeURIComponent(name)}&lang=${lang}`;
-          if (activeKeywords.length > 0) {
-            videoUrl += `&keywords=${encodeURIComponent(activeKeywords.join(","))}`;
+          const controller = new AbortController();
+          const timeout = hasTranscript ? 600000 : 60000;
+          const timer = setTimeout(() => controller.abort(), timeout);
+
+          // If filter is active, only download checked videos (only for single playlist)
+          const checkedUrls = (selectedPlaylists.length === 1 && matchedVideos.length > 0)
+            ? [...document.querySelectorAll('#matched-videos input[type="checkbox"]:checked')].map((cb) => cb.dataset.url).filter(Boolean)
+            : null;
+
+          let res;
+          if (checkedUrls) {
+            res = await fetch(`/api/videos`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ playlistId, cols: cols.join(","), name, lang, videoUrls: checkedUrls }),
+              signal: controller.signal,
+            });
+          } else {
+            let videoUrl = `/api/videos?playlistId=${encodeURIComponent(playlistId)}&cols=${cols.join(",")}&name=${encodeURIComponent(name)}&lang=${lang}`;
+            if (activeKeywords.length > 0) {
+              videoUrl += `&keywords=${encodeURIComponent(activeKeywords.join(","))}`;
+            }
+            res = await fetch(videoUrl, { signal: controller.signal });
           }
-          res = await fetch(videoUrl, { signal: controller.signal });
+          clearTimeout(timer);
+
+          if (!res.ok) { const err = await res.json(); throw new Error(err.error || t("unknownError")); }
+
+          const videoCount = parseInt(res.headers.get("X-Video-Count") || "0", 10);
+          totalVideoCount += videoCount;
+          const blob = await res.blob();
+
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${name.replace(/[^a-zA-Z0-9가-힣]/g, "_")}_videos.csv`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
         }
-        clearTimeout(timer);
 
-        if (!res.ok) { const err = await res.json(); throw new Error(err.error || t("unknownError")); }
-
-        const videoCount = res.headers.get("X-Video-Count") || "?";
-        const blob = await res.blob();
-
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${name.replace(/[^a-zA-Z0-9가-힣]/g, "_")}_videos.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        showStatus("success", t("downloadComplete", videoCount));
+        showStatus("success", t("downloadComplete", totalVideoCount));
       } catch (err) {
         showStatus("error", err.message);
       } finally {
