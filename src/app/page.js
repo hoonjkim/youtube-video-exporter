@@ -161,6 +161,16 @@ export default function Home() {
     } catch {}
   }
 
+  function resetToHome() {
+    setQuery("");
+    setChannels(null);
+    setChannelData(null);
+    setSelectedPlaylists(new Set());
+    setColumns({ title: true, url: true, date: true, transcript: false });
+    setStatus(null);
+    doClearFilter();
+  }
+
   function doClearFilter() {
     setActiveKeywords([]);
     setMatchedVideos([]);
@@ -267,7 +277,7 @@ export default function Home() {
         </select>
       </div>
 
-      <h1>YouTube Video Exporter</h1>
+      <h1 style={{ cursor: "pointer" }} onClick={resetToHome}>YouTube Video Exporter</h1>
       <p className="subtitle">{t("subtitle")}</p>
 
       <div className="search-box">
