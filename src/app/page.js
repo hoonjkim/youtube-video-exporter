@@ -2,19 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { i18n, languages } from "@/lib/i18n";
-
-const EXAMPLE_CHANNELS = [
-  { handle: "@3blue1brown", name: "3Blue1Brown", tag: "Math" },
-  { handle: "@numberphile", name: "Numberphile", tag: "Math" },
-  { handle: "@veritasium", name: "Veritasium", tag: "Science" },
-  { handle: "@kuaboratory", name: "안될과학", tag: "Science" },
-  { handle: "@khanacademy", name: "Khan Academy", tag: "Education" },
-  { handle: "@CaspianReport", name: "CaspianReport", tag: "Geopolitics" },
-  { handle: "@mitocw", name: "MIT OpenCourseWare", tag: "Lectures" },
-  { handle: "@crashcourse", name: "CrashCourse", tag: "Education" },
-  { handle: "@TEDEd", name: "TED-Ed", tag: "Education" },
-  { handle: "@psj1918", name: "박시진의 국제정치", tag: "Politics" },
-];
+import { getExampleChannels } from "@/lib/example-channels";
 
 function Avatar({ src, name }) {
   const [err, setErr] = useState(false);
@@ -45,11 +33,25 @@ export default function Home() {
   const [resultText, setResultText] = useState(null);
   const [resultFilename, setResultFilename] = useState("");
   const [copied, setCopied] = useState(false);
+  const [thumbs, setThumbs] = useState({});
 
   useEffect(() => {
     const saved = localStorage.getItem("yt-exporter-lang");
     if (saved && i18n[saved]) setLang(saved);
   }, []);
+
+  useEffect(() => {
+    const chs = getExampleChannels(lang);
+    const handles = chs.map(c => c.handle).join(",");
+    fetch(`/api/channel-previews?handles=${encodeURIComponent(handles)}`)
+      .then(r => r.json())
+      .then(data => {
+        const map = {};
+        for (const item of data) map[item.handle] = item.thumbnail;
+        setThumbs(prev => ({ ...prev, ...map }));
+      })
+      .catch(() => {});
+  }, [lang]);
 
   const t = useCallback((key, ...args) => {
     const val = i18n[lang]?.[key] || i18n.en[key];
@@ -347,14 +349,21 @@ export default function Home() {
         <div className="example-channels">
           <p className="example-channels-label">{t("tryChannels")}</p>
           <div className="example-channels-grid">
-            {EXAMPLE_CHANNELS.map(ch => (
+            {getExampleChannels(lang).map(ch => (
               <button
-                key={ch.handle}
-                className="example-ch-btn"
+                key={ch.handle + ch.name}
+                className="example-ch-card"
                 onClick={() => { setQuery(ch.handle); searchWithQuery(ch.handle); }}
                 disabled={isSearching}
               >
-                <span className="example-ch-name">{ch.name}</span>
+                {thumbs[ch.handle]
+                  ? <img className="example-ch-thumb" src={thumbs[ch.handle]} alt="" referrerPolicy="no-referrer" />
+                  : <div className="example-ch-thumb-fallback">{ch.name[0]}</div>
+                }
+                <div className="example-ch-info">
+                  <span className="example-ch-name">{ch.name}</span>
+                  <span className="example-ch-desc">{ch.desc}</span>
+                </div>
                 <span className="example-ch-tag">{ch.tag}</span>
               </button>
             ))}
