@@ -212,7 +212,7 @@ export default function Home() {
     setResultText(null);
     setCopied(false);
     const hasTranscript = cols.includes("transcript");
-    showStatus("loading", hasTranscript ? t("extractingTranscripts") : t("downloading"));
+    showStatus("loading", hasTranscript ? t("extractingTranscripts") : t("extracting"));
 
     try {
       let allText = "";
@@ -259,7 +259,7 @@ export default function Home() {
       const displayText = allText.replace(/^\uFEFF/, "");
       setResultText(displayText);
       setResultFilename(`${lastName.replace(/[^a-zA-Z0-9가-힣]/g, "_")}_videos.csv`);
-      showStatus("success", t("downloadComplete", totalVideoCount));
+      showStatus("success", t("extractComplete", totalVideoCount));
     } catch (err) {
       showStatus("error", err.message);
     } finally {
@@ -459,7 +459,7 @@ export default function Home() {
           </div>
 
           <button onClick={extractVideos} disabled={isDownloading} style={{ width: "100%" }}>
-            {t("download")}
+            {t("extract")}
           </button>
         </div>
       )}
