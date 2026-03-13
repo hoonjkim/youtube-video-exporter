@@ -29,6 +29,9 @@ export default function Home() {
   const [isSearching, setIsSearching] = useState(false);
   const [isFiltering, setIsFiltering] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [resultText, setResultText] = useState(null);
+  const [resultFilename, setResultFilename] = useState("");
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("yt-exporter-lang");
@@ -168,6 +171,8 @@ export default function Home() {
     setSelectedPlaylists(new Set());
     setColumns({ title: true, url: true, date: true, transcript: false });
     setStatus(null);
+    setResultText(null);
+    setCopied(false);
     doClearFilter();
   }
 
@@ -198,21 +203,26 @@ export default function Home() {
     }
   }
 
-  async function downloadVideos() {
+  async function extractVideos() {
     if (selectedPlaylists.size === 0) { showStatus("error", t("selectColumn")); return; }
     const cols = Object.entries(columns).filter(([, v]) => v).map(([k]) => k);
     if (cols.length === 0) { showStatus("error", t("selectColumn")); return; }
 
     setIsDownloading(true);
+    setResultText(null);
+    setCopied(false);
     const hasTranscript = cols.includes("transcript");
     showStatus("loading", hasTranscript ? t("extractingTranscripts") : t("downloading"));
 
     try {
+      let allText = "";
       let totalVideoCount = 0;
+      let lastName = "";
       const playlistEntries = getPlaylistEntries();
 
       for (const { id: playlistId, title: playlistTitle, isAll } of playlistEntries) {
         const name = isAll ? channelData.channelTitle : `${channelData.channelTitle}_${playlistTitle}`;
+        lastName = name;
         const controller = new AbortController();
         const timeout = hasTranscript ? 600000 : 60000;
         const timer = setTimeout(() => controller.abort(), timeout);
@@ -238,24 +248,43 @@ export default function Home() {
 
         const videoCount = parseInt(res.headers.get("X-Video-Count") || "0", 10);
         totalVideoCount += videoCount;
-        const blob = await res.blob();
+        const text = await res.text();
 
-        const blobUrl = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = blobUrl;
-        a.download = `${name.replace(/[^a-zA-Z0-9가-힣]/g, "_")}_videos.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(blobUrl);
+        if (allText && text) allText += "\n";
+        allText += text;
+        lastName = name;
       }
 
+      // Remove BOM for display
+      const displayText = allText.replace(/^\uFEFF/, "");
+      setResultText(displayText);
+      setResultFilename(`${lastName.replace(/[^a-zA-Z0-9가-힣]/g, "_")}_videos.csv`);
       showStatus("success", t("downloadComplete", totalVideoCount));
     } catch (err) {
       showStatus("error", err.message);
     } finally {
       setIsDownloading(false);
     }
+  }
+
+  function copyResult() {
+    if (!resultText) return;
+    navigator.clipboard.writeText(resultText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  function downloadCsv() {
+    if (!resultText) return;
+    const blob = new Blob(["\uFEFF" + resultText], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = resultFilename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   function getPlaylistEntries() {
@@ -429,9 +458,23 @@ export default function Home() {
             </label>
           </div>
 
-          <button onClick={downloadVideos} disabled={isDownloading} style={{ width: "100%" }}>
+          <button onClick={extractVideos} disabled={isDownloading} style={{ width: "100%" }}>
             {t("download")}
           </button>
+        </div>
+      )}
+
+      {resultText && (
+        <div className="result-panel">
+          <div className="result-actions">
+            <button className="result-btn copy-btn" onClick={copyResult}>
+              {copied ? "Copied!" : "Copy"}
+            </button>
+            <button className="result-btn download-btn" onClick={downloadCsv}>
+              Download CSV
+            </button>
+          </div>
+          <pre className="result-text">{resultText}</pre>
         </div>
       )}
 
