@@ -225,7 +225,8 @@ export default function Home() {
   }
 
   async function extractVideos() {
-    if (selectedPlaylists.size === 0) { showStatus("error", t("selectColumn")); return; }
+    const hasChecked = checkedVideos.size > 0 && matchedVideos.length > 0;
+    if (selectedPlaylists.size === 0 && !hasChecked) { showStatus("error", t("selectColumn")); return; }
     const cols = Object.entries(columns).filter(([, v]) => v).map(([k]) => k);
     if (cols.length === 0) { showStatus("error", t("selectColumn")); return; }
 
@@ -239,41 +240,64 @@ export default function Home() {
       let allText = "";
       let totalVideoCount = 0;
       let lastName = "";
-      const playlistEntries = getPlaylistEntries();
 
-      for (const { id: playlistId, title: playlistTitle, isAll } of playlistEntries) {
-        const name = isAll ? channelData.channelTitle : `${channelData.channelTitle}_${playlistTitle}`;
+      // If no playlist selected but filtered videos exist, extract checked videos directly
+      if (selectedPlaylists.size === 0 && hasChecked) {
+        const playlistId = channelData.uploadsPlaylistId;
+        const name = channelData.channelTitle;
         lastName = name;
         const controller = new AbortController();
         const timeout = hasTranscript ? 600000 : 60000;
         const timer = setTimeout(() => controller.abort(), timeout);
 
-        const useCheckedUrls = playlistEntries.length === 1 && matchedVideos.length > 0;
-        let res;
-        if (useCheckedUrls) {
-          const videoUrls = [...checkedVideos];
-          res = await fetch("/api/videos", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ playlistId, cols: cols.join(","), name, lang, videoUrls }),
-            signal: controller.signal,
-          });
-        } else {
-          let url = `/api/videos?playlistId=${encodeURIComponent(playlistId)}&cols=${cols.join(",")}&name=${encodeURIComponent(name)}&lang=${lang}`;
-          if (activeKeywords.length > 0) url += `&keywords=${encodeURIComponent(activeKeywords.join(","))}`;
-          res = await fetch(url, { signal: controller.signal });
-        }
+        const res = await fetch("/api/videos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ playlistId, cols: cols.join(","), name, lang, videoUrls: [...checkedVideos] }),
+          signal: controller.signal,
+        });
         clearTimeout(timer);
 
         if (!res.ok) { const err = await res.json(); throw new Error(err.error || t("unknownError")); }
+        totalVideoCount = parseInt(res.headers.get("X-Video-Count") || "0", 10);
+        allText = await res.text();
+      } else {
+        const playlistEntries = getPlaylistEntries();
 
-        const videoCount = parseInt(res.headers.get("X-Video-Count") || "0", 10);
-        totalVideoCount += videoCount;
-        const text = await res.text();
+        for (const { id: playlistId, title: playlistTitle, isAll } of playlistEntries) {
+          const name = isAll ? channelData.channelTitle : `${channelData.channelTitle}_${playlistTitle}`;
+          lastName = name;
+          const controller = new AbortController();
+          const timeout = hasTranscript ? 600000 : 60000;
+          const timer = setTimeout(() => controller.abort(), timeout);
 
-        if (allText && text) allText += "\n";
-        allText += text;
-        lastName = name;
+          const useCheckedUrls = playlistEntries.length === 1 && matchedVideos.length > 0;
+          let res;
+          if (useCheckedUrls) {
+            const videoUrls = [...checkedVideos];
+            res = await fetch("/api/videos", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ playlistId, cols: cols.join(","), name, lang, videoUrls }),
+              signal: controller.signal,
+            });
+          } else {
+            let url = `/api/videos?playlistId=${encodeURIComponent(playlistId)}&cols=${cols.join(",")}&name=${encodeURIComponent(name)}&lang=${lang}`;
+            if (activeKeywords.length > 0) url += `&keywords=${encodeURIComponent(activeKeywords.join(","))}`;
+            res = await fetch(url, { signal: controller.signal });
+          }
+          clearTimeout(timer);
+
+          if (!res.ok) { const err = await res.json(); throw new Error(err.error || t("unknownError")); }
+
+          const videoCount = parseInt(res.headers.get("X-Video-Count") || "0", 10);
+          totalVideoCount += videoCount;
+          const text = await res.text();
+
+          if (allText && text) allText += "\n";
+          allText += text;
+          lastName = name;
+        }
       }
 
       // Remove BOM for display
