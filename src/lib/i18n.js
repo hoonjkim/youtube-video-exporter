@@ -155,7 +155,7 @@ export const i18n = {
     filterResult: (n, total) => `共 ${total} 个中匹配 ${n} 个`,
     relatedLabel: "相关:", filteringVideos: "正在筛选视频...",
     selectAll: "全选", deselectAll: "取消全选", matchedCount: (n) => `${n}个匹配`,
-    deselectAllFirst: "请先取消选择"全部视频"，再选择单独的播放列表。",
+    deselectAllFirst: "请先取消选择「全部视频」，再选择单独的播放列表。",
   },
   es: {
     subtitle: "Extrae títulos, enlaces y subtítulos de videos de cualquier YouTuber",
