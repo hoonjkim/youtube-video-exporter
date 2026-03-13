@@ -133,6 +133,7 @@ export const i18n = {
     selectAll: "全選択",
     deselectAll: "全解除",
     matchedCount: (n) => `${n}本一致`,
+    deselectAllFirst: "個別のプレイリストを選択するには、まず「全動画」の選択を解除してください。",
   },
   zh: {
     subtitle: "提取任何YouTuber的视频标题、链接和字幕",
@@ -154,6 +155,7 @@ export const i18n = {
     filterResult: (n, total) => `共 ${total} 个中匹配 ${n} 个`,
     relatedLabel: "相关:", filteringVideos: "正在筛选视频...",
     selectAll: "全选", deselectAll: "取消全选", matchedCount: (n) => `${n}个匹配`,
+    deselectAllFirst: "请先取消选择"全部视频"，再选择单独的播放列表。",
   },
   es: {
     subtitle: "Extrae títulos, enlaces y subtítulos de videos de cualquier YouTuber",
@@ -175,6 +177,7 @@ export const i18n = {
     filterResult: (n, total) => `${n} de ${total} videos coinciden`,
     relatedLabel: "Relacionados:", filteringVideos: "Filtrando videos...",
     selectAll: "Seleccionar todo", deselectAll: "Deseleccionar todo", matchedCount: (n) => `${n} coincidencias`,
+    deselectAllFirst: "Deselecciona \"Todos los videos\" primero para elegir listas individuales.",
   },
   hi: {
     subtitle: "किसी भी YouTuber के वीडियो शीर्षक, लिंक और उपशीर्षक निकालें",
@@ -196,6 +199,7 @@ export const i18n = {
     filterResult: (n, total) => `${total} में से ${n} वीडियो मिले`,
     relatedLabel: "संबंधित:", filteringVideos: "वीडियो फ़िल्टर हो रहे हैं...",
     selectAll: "सभी चुनें", deselectAll: "सभी हटाएं", matchedCount: (n) => `${n} मिले`,
+    deselectAllFirst: "अलग प्लेलिस्ट चुनने के लिए पहले \"सभी वीडियो\" को अचयनित करें।",
   },
   fr: {
     subtitle: "Extraire les titres, liens et sous-titres de vidéos de n'importe quel YouTuber",
@@ -217,6 +221,7 @@ export const i18n = {
     filterResult: (n, total) => `${n} sur ${total} vidéos correspondent`,
     relatedLabel: "Associés:", filteringVideos: "Filtrage des vidéos...",
     selectAll: "Tout sélectionner", deselectAll: "Tout désélectionner", matchedCount: (n) => `${n} résultats`,
+    deselectAllFirst: "Désélectionnez d'abord \"Toutes les vidéos\" pour choisir des playlists individuelles.",
   },
   ar: {
     subtitle: "استخراج عناوين وروابط وترجمات الفيديو من أي يوتيوبر",
@@ -238,6 +243,7 @@ export const i18n = {
     filterResult: (n, total) => `${n} من ${total} فيديو متطابق`,
     relatedLabel: "ذات صلة:", filteringVideos: "جاري التصفية...",
     selectAll: "تحديد الكل", deselectAll: "إلغاء الكل", matchedCount: (n) => `${n} متطابق`,
+    deselectAllFirst: "قم بإلغاء تحديد \"جميع الفيديوهات\" أولاً لاختيار قوائم تشغيل فردية.",
   },
   bn: {
     subtitle: "যেকোনো YouTuber-এর ভিডিও শিরোনাম, লিংক ও সাবটাইটেল বের করুন",
@@ -259,6 +265,7 @@ export const i18n = {
     filterResult: (n, total) => `${total}টির মধ্যে ${n}টি মিলেছে`,
     relatedLabel: "সম্পর্কিত:", filteringVideos: "ভিডিও ফিল্টার হচ্ছে...",
     selectAll: "সব নির্বাচন", deselectAll: "সব বাতিল", matchedCount: (n) => `${n}টি মিলেছে`,
+    deselectAllFirst: "আলাদা প্লেলিস্ট বেছে নিতে প্রথমে \"সব ভিডিও\" অনির্বাচন করুন।",
   },
   pt: {
     subtitle: "Extraia títulos, links e legendas de vídeos de qualquer YouTuber",
@@ -280,6 +287,7 @@ export const i18n = {
     filterResult: (n, total) => `${n} de ${total} vídeos correspondem`,
     relatedLabel: "Relacionados:", filteringVideos: "Filtrando vídeos...",
     selectAll: "Selecionar tudo", deselectAll: "Desmarcar tudo", matchedCount: (n) => `${n} resultados`,
+    deselectAllFirst: "Desmarque \"Todos os vídeos\" primeiro para escolher playlists individuais.",
   },
   ru: {
     subtitle: "Извлекайте названия, ссылки и субтитры видео любого YouTuber",
@@ -301,6 +309,7 @@ export const i18n = {
     filterResult: (n, total) => `${n} из ${total} видео совпадают`,
     relatedLabel: "Связанные:", filteringVideos: "Фильтрация видео...",
     selectAll: "Выбрать все", deselectAll: "Снять все", matchedCount: (n) => `${n} совпадений`,
+    deselectAllFirst: "Сначала снимите выбор \"Все видео\", чтобы выбрать отдельные плейлисты.",
   },
   de: {
     subtitle: "Videotitel, Links und Untertitel von jedem YouTuber extrahieren",
@@ -322,6 +331,7 @@ export const i18n = {
     filterResult: (n, total) => `${n} von ${total} Videos stimmen überein`,
     relatedLabel: "Verwandt:", filteringVideos: "Videos werden gefiltert...",
     selectAll: "Alle auswählen", deselectAll: "Alle abwählen", matchedCount: (n) => `${n} Treffer`,
+    deselectAllFirst: "Bitte zuerst \"Alle Videos\" abwählen, um einzelne Playlists auszuwählen.",
   },
   tr: {
     subtitle: "Herhangi bir YouTuber'ın video başlıklarını, bağlantılarını ve altyazılarını çıkarın",
@@ -343,6 +353,7 @@ export const i18n = {
     filterResult: (n, total) => `${total} videodan ${n} tanesi eşleşti`,
     relatedLabel: "İlgili:", filteringVideos: "Videolar filtreleniyor...",
     selectAll: "Tümünü seç", deselectAll: "Tümünü kaldır", matchedCount: (n) => `${n} eşleşme`,
+    deselectAllFirst: "Bireysel oynatma listeleri seçmek için önce \"Tüm Videolar\" seçimini kaldırın.",
   },
   vi: {
     subtitle: "Trích xuất tiêu đề, liên kết và phụ đề video từ bất kỳ YouTuber nào",
@@ -364,6 +375,7 @@ export const i18n = {
     filterResult: (n, total) => `${n} trong ${total} video khớp`,
     relatedLabel: "Liên quan:", filteringVideos: "Đang lọc video...",
     selectAll: "Chọn tất cả", deselectAll: "Bỏ chọn tất cả", matchedCount: (n) => `${n} kết quả`,
+    deselectAllFirst: "Bỏ chọn \"Tất cả video\" trước để chọn danh sách phát riêng.",
   },
   it: {
     subtitle: "Estrai titoli, link e sottotitoli dei video di qualsiasi YouTuber",
@@ -385,6 +397,7 @@ export const i18n = {
     filterResult: (n, total) => `${n} di ${total} video corrispondono`,
     relatedLabel: "Correlati:", filteringVideos: "Filtraggio video...",
     selectAll: "Seleziona tutto", deselectAll: "Deseleziona tutto", matchedCount: (n) => `${n} risultati`,
+    deselectAllFirst: "Deseleziona prima \"Tutti i video\" per scegliere playlist singole.",
   },
   th: {
     subtitle: "ดึงชื่อ ลิงก์ และคำบรรยายวิดีโอจาก YouTuber คนใดก็ได้",
@@ -406,6 +419,7 @@ export const i18n = {
     filterResult: (n, total) => `${n} จาก ${total} วิดีโอตรงกัน`,
     relatedLabel: "ที่เกี่ยวข้อง:", filteringVideos: "กำลังกรองวิดีโอ...",
     selectAll: "เลือกทั้งหมด", deselectAll: "ยกเลิกทั้งหมด", matchedCount: (n) => `${n} ตรงกัน`,
+    deselectAllFirst: "ยกเลิกการเลือก \"วิดีโอทั้งหมด\" ก่อนเพื่อเลือกเพลย์ลิสต์แต่ละรายการ",
   },
   pl: {
     subtitle: "Wyodrębnij tytuły, linki i napisy wideo dowolnego YouTubera",
@@ -427,6 +441,7 @@ export const i18n = {
     filterResult: (n, total) => `${n} z ${total} filmów pasuje`,
     relatedLabel: "Powiązane:", filteringVideos: "Filtrowanie filmów...",
     selectAll: "Zaznacz wszystko", deselectAll: "Odznacz wszystko", matchedCount: (n) => `${n} pasujących`,
+    deselectAllFirst: "Najpierw odznacz \"Wszystkie filmy\", aby wybrać pojedyncze playlisty.",
   },
   nl: {
     subtitle: "Extraheer videotitels, links en ondertitels van elke YouTuber",
@@ -448,6 +463,7 @@ export const i18n = {
     filterResult: (n, total) => `${n} van ${total} video's komen overeen`,
     relatedLabel: "Gerelateerd:", filteringVideos: "Video's filteren...",
     selectAll: "Alles selecteren", deselectAll: "Alles deselecteren", matchedCount: (n) => `${n} resultaten`,
+    deselectAllFirst: "Deselecteer eerst \"Alle video's\" om individuele afspeellijsten te kiezen.",
   },
   id: {
     subtitle: "Ekstrak judul, tautan, dan subtitle video dari YouTuber mana pun",
@@ -469,6 +485,7 @@ export const i18n = {
     filterResult: (n, total) => `${n} dari ${total} video cocok`,
     relatedLabel: "Terkait:", filteringVideos: "Memfilter video...",
     selectAll: "Pilih semua", deselectAll: "Hapus semua", matchedCount: (n) => `${n} cocok`,
+    deselectAllFirst: "Hapus pilihan \"Semua Video\" terlebih dahulu untuk memilih playlist tertentu.",
   },
   tl: {
     subtitle: "I-extract ang mga video title, link, at subtitle mula sa kahit anong YouTuber",
@@ -490,5 +507,6 @@ export const i18n = {
     filterResult: (n, total) => `${n} sa ${total} video ang tumugma`,
     relatedLabel: "Kaugnay:", filteringVideos: "Fini-filter ang mga video...",
     selectAll: "Piliin lahat", deselectAll: "Alisin lahat", matchedCount: (n) => `${n} tumugma`,
+    deselectAllFirst: "I-deselect muna ang \"Lahat ng Video\" para pumili ng mga playlist.",
   },
 };
