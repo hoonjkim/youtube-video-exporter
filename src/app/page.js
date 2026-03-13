@@ -42,12 +42,12 @@ export default function Home() {
 
   useEffect(() => {
     const chs = getExampleChannels(lang);
-    const handles = chs.map(c => c.handle).join(",");
-    fetch(`/api/channel-previews?handles=${encodeURIComponent(handles)}`)
+    const queries = chs.map(c => c.query).join("|||");
+    fetch(`/api/channel-previews?queries=${encodeURIComponent(queries)}`)
       .then(r => r.json())
       .then(data => {
         const map = {};
-        for (const item of data) map[item.handle] = item.thumbnail;
+        for (const item of data) map[item.query] = item.thumbnail;
         setThumbs(prev => ({ ...prev, ...map }));
       })
       .catch(() => {});
@@ -351,13 +351,13 @@ export default function Home() {
           <div className="example-channels-grid">
             {getExampleChannels(lang).map(ch => (
               <button
-                key={ch.handle + ch.name}
+                key={ch.query + ch.name}
                 className="example-ch-card"
-                onClick={() => { setQuery(ch.handle); searchWithQuery(ch.handle); }}
+                onClick={() => { setQuery(ch.query); searchWithQuery(ch.query); }}
                 disabled={isSearching}
               >
-                {thumbs[ch.handle]
-                  ? <img className="example-ch-thumb" src={thumbs[ch.handle]} alt="" referrerPolicy="no-referrer" />
+                {thumbs[ch.query]
+                  ? <img className="example-ch-thumb" src={thumbs[ch.query]} alt="" referrerPolicy="no-referrer" />
                   : <div className="example-ch-thumb-fallback">{ch.name[0]}</div>
                 }
                 <div className="example-ch-info">
