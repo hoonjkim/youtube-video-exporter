@@ -89,6 +89,9 @@ export default function Home() {
     setIsSearching(true);
     setChannelData(null);
     setChannels(null);
+    setResultText(null);
+    setCopied(false);
+    setNotebookCopied(false);
     showStatus("loading", t("searching"));
 
     try {
