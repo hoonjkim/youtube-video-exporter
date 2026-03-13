@@ -55,6 +55,7 @@ export const i18n = {
     selectAll: "Select All",
     deselectAll: "Deselect All",
     matchedCount: (n) => `${n} matched`,
+    tryChannels: "Try an example channel:",
   },
   ko: {
     subtitle: "유튜버의 영상 제목, 링크, 자막을 추출",
@@ -89,6 +90,7 @@ export const i18n = {
     selectAll: "전체 선택",
     deselectAll: "전체 해제",
     matchedCount: (n) => `${n}개 일치`,
+    tryChannels: "예시 채널을 눌러보세요:",
   },
   ja: {
     subtitle: "YouTuberの動画タイトル、リンク、字幕を抽出",

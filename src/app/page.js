@@ -3,6 +3,19 @@
 import { useState, useEffect, useCallback } from "react";
 import { i18n, languages } from "@/lib/i18n";
 
+const EXAMPLE_CHANNELS = [
+  { handle: "@3blue1brown", name: "3Blue1Brown", tag: "Math" },
+  { handle: "@numberphile", name: "Numberphile", tag: "Math" },
+  { handle: "@veritasium", name: "Veritasium", tag: "Science" },
+  { handle: "@kuaboratory", name: "안될과학", tag: "Science" },
+  { handle: "@khanacademy", name: "Khan Academy", tag: "Education" },
+  { handle: "@CaspianReport", name: "CaspianReport", tag: "Geopolitics" },
+  { handle: "@mitocw", name: "MIT OpenCourseWare", tag: "Lectures" },
+  { handle: "@crashcourse", name: "CrashCourse", tag: "Education" },
+  { handle: "@TEDEd", name: "TED-Ed", tag: "Education" },
+  { handle: "@psj1918", name: "박시진의 국제정치", tag: "Politics" },
+];
+
 function Avatar({ src, name }) {
   const [err, setErr] = useState(false);
   if (err || !src) {
@@ -68,15 +81,15 @@ export default function Home() {
     setStatus(null);
   }
 
-  async function searchChannel() {
-    if (!query.trim()) { showStatus("error", t("enterQuery")); return; }
+  async function searchWithQuery(q) {
+    if (!q.trim()) { showStatus("error", t("enterQuery")); return; }
     setIsSearching(true);
     setChannelData(null);
     setChannels(null);
     showStatus("loading", t("searching"));
 
     try {
-      const res = await fetch(`/api/search-channels?q=${encodeURIComponent(query.trim())}`);
+      const res = await fetch(`/api/search-channels?q=${encodeURIComponent(q.trim())}`);
       if (!res.ok) { const err = await res.json(); throw new Error(err.error || t("unknownError")); }
       const results = await res.json();
       if (results.length === 0) { showStatus("error", t("noResults")); return; }
@@ -88,6 +101,10 @@ export default function Home() {
     } finally {
       setIsSearching(false);
     }
+  }
+
+  function searchChannel() {
+    searchWithQuery(query);
   }
 
   async function selectChannel(channelId) {
@@ -325,6 +342,25 @@ export default function Home() {
       </div>
 
       <div className="examples" dangerouslySetInnerHTML={{ __html: t("examples") }} />
+
+      {!channelData && !channels && (
+        <div className="example-channels">
+          <p className="example-channels-label">{t("tryChannels")}</p>
+          <div className="example-channels-grid">
+            {EXAMPLE_CHANNELS.map(ch => (
+              <button
+                key={ch.handle}
+                className="example-ch-btn"
+                onClick={() => { setQuery(ch.handle); searchWithQuery(ch.handle); }}
+                disabled={isSearching}
+              >
+                <span className="example-ch-name">{ch.name}</span>
+                <span className="example-ch-tag">{ch.tag}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {channels && (
         <div className="search-results-panel">
