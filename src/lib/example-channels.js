@@ -69,3 +69,46 @@ export function getExampleChannels(lang) {
   const map = { en, ko, ja, zh, es };
   return map[lang] || en;
 }
+
+// Subject search terms per language
+const subjects = [
+  {
+    id: "ai",
+    icon: "🤖",
+    label: { en: "AI", ko: "인공지능", ja: "AI", zh: "人工智能", es: "IA" },
+    query: { en: "artificial intelligence", ko: "인공지능 강의", ja: "人工知能 講義", zh: "人工智能 教程", es: "inteligencia artificial" },
+  },
+  {
+    id: "math",
+    icon: "📐",
+    label: { en: "Math", ko: "수학", ja: "数学", zh: "数学", es: "Matemáticas" },
+    query: { en: "mathematics education", ko: "수학 강의", ja: "数学 授業", zh: "数学 教育", es: "matemáticas educación" },
+  },
+  {
+    id: "science",
+    icon: "🔬",
+    label: { en: "Science", ko: "과학", ja: "科学", zh: "科学", es: "Ciencia" },
+    query: { en: "science education", ko: "과학 강의", ja: "科学 教育", zh: "科学 教育", es: "ciencia educación" },
+  },
+  {
+    id: "history",
+    icon: "📜",
+    label: { en: "History", ko: "역사", ja: "歴史", zh: "历史", es: "Historia" },
+    query: { en: "history documentary", ko: "역사 다큐멘터리", ja: "歴史 ドキュメンタリー", zh: "历史 纪录片", es: "historia documental" },
+  },
+  {
+    id: "programming",
+    icon: "💻",
+    label: { en: "Programming", ko: "프로그래밍", ja: "プログラミング", zh: "编程", es: "Programación" },
+    query: { en: "programming tutorial", ko: "프로그래밍 강의", ja: "プログラミング 講座", zh: "编程 教程", es: "programación tutorial" },
+  },
+];
+
+export function getSubjects(lang) {
+  return subjects.map(s => ({
+    id: s.id,
+    icon: s.icon,
+    label: s.label[lang] || s.label.en,
+    query: s.query[lang] || s.query.en,
+  }));
+}

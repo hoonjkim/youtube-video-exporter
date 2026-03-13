@@ -42,7 +42,7 @@ export async function GET(request) {
       q: parsed.value.replace(/^@/, ""),
       type: "channel",
       part: "snippet",
-      maxResults: "5",
+      maxResults: searchParams.get("limit") || "5",
     });
 
     if (!searchData.items?.length) return NextResponse.json([]);

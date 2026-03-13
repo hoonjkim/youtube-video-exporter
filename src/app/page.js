@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { i18n, languages } from "@/lib/i18n";
-import { getExampleChannels } from "@/lib/example-channels";
+import { getExampleChannels, getSubjects } from "@/lib/example-channels";
 
 function Avatar({ src, name }) {
   const [err, setErr] = useState(false);
@@ -84,7 +84,7 @@ export default function Home() {
     setStatus(null);
   }
 
-  async function searchWithQuery(q) {
+  async function searchWithQuery(q, limit) {
     if (!q.trim()) { showStatus("error", t("enterQuery")); return; }
     setIsSearching(true);
     setChannelData(null);
@@ -95,11 +95,13 @@ export default function Home() {
     showStatus("loading", t("searching"));
 
     try {
-      const res = await fetch(`/api/search-channels?q=${encodeURIComponent(q.trim())}`);
+      let url = `/api/search-channels?q=${encodeURIComponent(q.trim())}`;
+      if (limit) url += `&limit=${limit}`;
+      const res = await fetch(url);
       if (!res.ok) { const err = await res.json(); throw new Error(err.error || t("unknownError")); }
       const results = await res.json();
       if (results.length === 0) { showStatus("error", t("noResults")); return; }
-      if (results.length === 1) { await selectChannel(results[0].channelId); return; }
+      if (!limit && results.length === 1) { await selectChannel(results[0].channelId); return; }
       setChannels(results);
       hideStatus();
     } catch (err) {
@@ -405,6 +407,19 @@ export default function Home() {
 
       {!channelData && !channels && (
         <div className="example-channels">
+          <div className="subject-buttons">
+            {getSubjects(lang).map(s => (
+              <button
+                key={s.id}
+                className="subject-btn"
+                onClick={() => { setQuery(s.query); searchWithQuery(s.query, 10); }}
+                disabled={isSearching}
+              >
+                <span className="subject-icon">{s.icon}</span>
+                {s.label}
+              </button>
+            ))}
+          </div>
           <p className="example-channels-label">{t("tryChannels")}</p>
           <div className="example-channels-grid">
             {getExampleChannels(lang).map(ch => (
