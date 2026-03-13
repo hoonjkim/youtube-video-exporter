@@ -131,10 +131,24 @@ export default function Home() {
   }
 
   function togglePlaylist(playlistId) {
+    const isAll = channelData && playlistId === channelData.uploadsPlaylistId;
+    const allSelected = channelData && selectedPlaylists.has(channelData.uploadsPlaylistId);
+
+    // Trying to add a specific playlist while "All Videos" is selected
+    if (!isAll && allSelected && !selectedPlaylists.has(playlistId)) {
+      showStatus("error", t("deselectAllFirst"));
+      return;
+    }
+
     setSelectedPlaylists(prev => {
       const next = new Set(prev);
-      if (next.has(playlistId)) next.delete(playlistId);
-      else next.add(playlistId);
+      if (next.has(playlistId)) {
+        next.delete(playlistId);
+      } else {
+        // Selecting "All Videos" clears other playlists
+        if (isAll) next.clear();
+        next.add(playlistId);
+      }
       return next;
     });
   }

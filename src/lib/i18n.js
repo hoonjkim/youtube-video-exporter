@@ -59,6 +59,7 @@ export const i18n = {
     sendToNotebook: "Copy & Open NotebookLM",
     notebookCopied: "URLs copied! Paste in NotebookLM",
     noUrlsFound: "No video URLs found in the extracted data.",
+    deselectAllFirst: "Deselect \"All Videos\" first to choose individual playlists.",
   },
   ko: {
     subtitle: "유튜버의 영상 제목, 링크, 자막을 추출",
@@ -97,6 +98,7 @@ export const i18n = {
     sendToNotebook: "복사 후 NotebookLM 열기",
     notebookCopied: "URL 복사 완료! NotebookLM에 붙여넣기",
     noUrlsFound: "추출된 데이터에 영상 URL이 없습니다.",
+    deselectAllFirst: "개별 플레이리스트를 선택하려면 \"전체 영상\"을 먼저 해제하세요.",
   },
   ja: {
     subtitle: "YouTuberの動画タイトル、リンク、字幕を抽出",
