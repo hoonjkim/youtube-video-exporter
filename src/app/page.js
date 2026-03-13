@@ -416,7 +416,10 @@ export default function Home() {
                 disabled={isSearching}
               >
                 <span className="subject-icon">{s.icon}</span>
-                {s.label}
+                <span className="subject-text">
+                  <span className="subject-label">{s.label}</span>
+                  <span className="subject-desc">{s.desc}</span>
+                </span>
               </button>
             ))}
           </div>
