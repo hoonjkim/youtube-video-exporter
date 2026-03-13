@@ -38,12 +38,15 @@ export async function GET(request) {
       }
     }
 
-    const searchData = await ytFetch("search", {
+    const searchParams2 = {
       q: parsed.value.replace(/^@/, ""),
       type: "channel",
       part: "snippet",
       maxResults: searchParams.get("limit") || "5",
-    });
+    };
+    const langParam = searchParams.get("lang");
+    if (langParam) searchParams2.relevanceLanguage = langParam;
+    const searchData = await ytFetch("search", searchParams2);
 
     if (!searchData.items?.length) return NextResponse.json([]);
 

@@ -95,7 +95,7 @@ export default function Home() {
     showStatus("loading", t("searching"));
 
     try {
-      let url = `/api/search-channels?q=${encodeURIComponent(q.trim())}`;
+      let url = `/api/search-channels?q=${encodeURIComponent(q.trim())}&lang=${lang}`;
       if (limit) url += `&limit=${limit}`;
       const res = await fetch(url);
       if (!res.ok) { const err = await res.json(); throw new Error(err.error || t("unknownError")); }
@@ -379,31 +379,32 @@ export default function Home() {
 
   return (
     <div className="container">
-      <div className="top-bar">
+      <h1 className="logo" onClick={resetToHome}>
+        <span className="logo-icon">▶</span> YouTube Video Link Exporter
+      </h1>
+      <div className="lang-bar">
         <select className="lang-select" value={lang} onChange={e => changeLang(e.target.value)}>
           {languages.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
         </select>
       </div>
-
-      <h1 className="logo" onClick={resetToHome}>
-        <span className="logo-icon">▶</span> YouTube Video Exporter
-      </h1>
       <p className="subtitle">{t("subtitle")}</p>
 
-      <div className="search-box">
-        <input
-          type="text"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          onKeyDown={e => e.key === "Enter" && searchChannel()}
-          placeholder={t("placeholder")}
-        />
-        <button onClick={searchChannel} disabled={isSearching}>
-          {t("search")}
-        </button>
-      </div>
+      <div className="center-narrow">
+        <div className="search-box">
+          <input
+            type="text"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && searchChannel()}
+            placeholder={t("placeholder")}
+          />
+          <button onClick={searchChannel} disabled={isSearching}>
+            {t("search")}
+          </button>
+        </div>
 
-      <div className="examples" dangerouslySetInnerHTML={{ __html: t("examples") }} />
+        <div className="examples" dangerouslySetInnerHTML={{ __html: t("examples") }} />
+      </div>
 
       {!channelData && !channels && (
         <div className="example-channels">
@@ -448,7 +449,7 @@ export default function Home() {
       )}
 
       {channels && (
-        <div className="search-results-panel">
+        <div className="search-results-panel ">
           <p style={{ color: "#aaa", fontSize: 13, marginBottom: 10 }}>{t("selectChannel")}</p>
           {channels.map(ch => (
             <div key={ch.channelId} className="channel-result" onClick={() => selectChannel(ch.channelId)}>
@@ -465,7 +466,7 @@ export default function Home() {
       )}
 
       {channelData && (
-        <div className="channel-panel">
+        <div className="channel-panel ">
           <a className="channel-header" href={`https://www.youtube.com/channel/${channelData.channelId}`} target="_blank" rel="noreferrer">
             <Avatar src={channelData.thumbnail} name={channelData.channelTitle} />
             <div className="info">
@@ -586,7 +587,7 @@ export default function Home() {
       )}
 
       {resultText && (
-        <div className="result-panel">
+        <div className="result-panel ">
           <div className="result-actions">
             <button className="result-btn copy-btn" onClick={copyResult}>
               {copied ? "Copied!" : "Copy"}
@@ -603,7 +604,7 @@ export default function Home() {
       )}
 
       {status && (
-        <div className={`status ${status.type}`}>
+        <div className={`status ${status.type} center-narrow`}>
           {status.type === "loading" && <span className="spinner" />}
           {status.message}
         </div>
