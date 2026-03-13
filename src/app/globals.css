@@ -379,6 +379,8 @@ button:disabled { background: #555; cursor: not-allowed; }
 .copy-btn:hover { background: #1d4ed8; }
 .download-btn { background: #333; border: 1px solid #555; }
 .download-btn:hover { background: #444; }
+.notebook-btn { background: #1a5c2a; border: 1px solid #2a8c3a; }
+.notebook-btn:hover { background: #1e7a32; }
 
 .result-text {
   background: #0a0a0a;

@@ -56,6 +56,9 @@ export const i18n = {
     deselectAll: "Deselect All",
     matchedCount: (n) => `${n} matched`,
     tryChannels: "Try an example channel:",
+    sendToNotebook: "Open in NotebookLM",
+    notebookCopied: "URLs copied! Paste in NotebookLM",
+    noUrlsFound: "No video URLs found in the extracted data.",
   },
   ko: {
     subtitle: "유튜버의 영상 제목, 링크, 자막을 추출",
@@ -91,6 +94,9 @@ export const i18n = {
     deselectAll: "전체 해제",
     matchedCount: (n) => `${n}개 일치`,
     tryChannels: "예시 채널을 눌러보세요:",
+    sendToNotebook: "NotebookLM에서 열기",
+    notebookCopied: "URL 복사 완료! NotebookLM에 붙여넣기",
+    noUrlsFound: "추출된 데이터에 영상 URL이 없습니다.",
   },
   ja: {
     subtitle: "YouTuberの動画タイトル、リンク、字幕を抽出",

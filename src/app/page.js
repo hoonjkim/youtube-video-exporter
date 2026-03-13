@@ -33,6 +33,7 @@ export default function Home() {
   const [resultText, setResultText] = useState(null);
   const [resultFilename, setResultFilename] = useState("");
   const [copied, setCopied] = useState(false);
+  const [notebookCopied, setNotebookCopied] = useState(false);
   const [thumbs, setThumbs] = useState({});
 
   useEffect(() => {
@@ -192,6 +193,7 @@ export default function Home() {
     setStatus(null);
     setResultText(null);
     setCopied(false);
+    setNotebookCopied(false);
     doClearFilter();
   }
 
@@ -304,6 +306,21 @@ export default function Home() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+
+  function sendToNotebookLM() {
+    if (!resultText) return;
+    // Extract YouTube URLs from CSV text
+    const urls = resultText.match(/https?:\/\/www\.youtube\.com\/watch\?v=[^\s,"\n]+/g);
+    if (!urls || urls.length === 0) {
+      showStatus("error", t("noUrlsFound"));
+      return;
+    }
+    const unique = [...new Set(urls)];
+    navigator.clipboard.writeText(unique.join("\n"));
+    setNotebookCopied(true);
+    setTimeout(() => setNotebookCopied(false), 3000);
+    window.open("https://notebooklm.google.com/", "_blank");
   }
 
   function getPlaylistEntries() {
@@ -517,6 +534,9 @@ export default function Home() {
             </button>
             <button className="result-btn download-btn" onClick={downloadCsv}>
               Download CSV
+            </button>
+            <button className="result-btn notebook-btn" onClick={sendToNotebookLM}>
+              {notebookCopied ? t("notebookCopied") : t("sendToNotebook")}
             </button>
           </div>
           <pre className="result-text">{resultText}</pre>
